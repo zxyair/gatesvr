@@ -1,0 +1,47 @@
+INFO[2025/07/22 14:34:30.700262] locator.go:59 redis locator init &{{{}} [127.0.0.1:6379] 0  123456 3 0xc0001186c0 due}
+INFO[2025/07/22 14:35:29.530824] locator.go:59 redis locator init &{{{}} [127.0.0.1:6379] 0   3 0xc0001986c0 due}
+INFO[2025/07/22 14:35:37.652783] locator.go:59 redis locator init &{{{}} [127.0.0.1:6379] 0  123456 3 0xc00009c7c0 due}
+INFO[2025/07/22 14:41:03.950207] options.go:61
+INFO[2025/07/22 14:41:03.951904] locator.go:59 redis locator init &{{{}} [127.0.0.1:6379] 0  123456 3 0xc00007a380 due}
+INFO[2025/07/22 14:42:32.292522] options.go:61
+INFO[2025/07/22 14:51:00.565689] options.go:61
+INFO[2025/07/22 14:51:00.567886] locator.go:59 redis locator init &{{{}} [127.0.0.1:6379] 0  123456 3 0xc00007a900 due}
+INFO[2025/07/22 14:51:00.568422] options.go:61
+INFO[2025/07/22 14:51:00.568422] locator.go:59 redis locator init &{{{}} [127.0.0.1:6379] 0   3 0xc00007b340 due}
+INFO[2025/07/22 14:55:09.500323] locator_test.go:39 &{context.Background [] 0   0 <nil> }
+INFO[2025/07/22 15:06:42.853945] locator_test.go:30 []
+INFO[2025/07/22 15:06:42.856586] locator_test.go:31 []
+INFO[2025/07/22 15:06:42.856586] locator_test.go:32 []
+INFO[2025/07/22 15:06:42.856586] locator_test.go:33 []
+INFO[2025/07/22 15:06:42.856586] locator_test.go:34 []
+INFO[2025/07/22 15:06:42.856586] locator_test.go:35 []
+INFO[2025/07/22 15:06:47.492334] locator_test.go:30 []
+INFO[2025/07/22 15:06:47.494697] locator_test.go:31 []
+INFO[2025/07/22 15:06:47.494697] locator_test.go:32 []
+INFO[2025/07/22 15:06:47.494697] locator_test.go:33 []
+INFO[2025/07/22 15:06:47.494697] locator_test.go:34 []
+INFO[2025/07/22 15:06:47.494697] locator_test.go:35 []
+INFO[2025/07/22 15:06:49.775895] locator_test.go:30 []
+INFO[2025/07/22 15:06:49.777187] locator_test.go:31 []
+INFO[2025/07/22 15:06:49.777187] locator_test.go:32 []
+INFO[2025/07/22 15:06:49.777187] locator_test.go:33 []
+INFO[2025/07/22 15:06:49.777187] locator_test.go:34 []
+INFO[2025/07/22 15:06:49.777187] locator_test.go:35 []
+INFO[2025/07/22 15:11:54.172931] D:/goworkspace/gatesvr/locate/redis/locator_test.go:43 [127.0.0.1:6379]
+INFO[2025/07/22 15:11:54.175381] D:/goworkspace/gatesvr/locate/redis/locator_test.go:44 []
+INFO[2025/07/22 15:11:54.175381] D:/goworkspace/gatesvr/locate/redis/locator_test.go:45 []
+INFO[2025/07/22 15:11:54.175381] D:/goworkspace/gatesvr/locate/redis/locator_test.go:46 []
+INFO[2025/07/22 15:11:54.175381] D:/goworkspace/gatesvr/locate/redis/locator_test.go:47 []
+INFO[2025/07/22 15:11:54.175381] D:/goworkspace/gatesvr/locate/redis/locator_test.go:48 []
+INFO[2025/07/22 15:12:56.557783] D:/goworkspace/gatesvr/locate/redis/locator_test.go:43 [127.0.0.1:6379]
+INFO[2025/07/22 15:12:56.559980] D:/goworkspace/gatesvr/locate/redis/locator_test.go:44 0
+INFO[2025/07/22 15:12:56.559980] D:/goworkspace/gatesvr/locate/redis/locator_test.go:45 3
+INFO[2025/07/22 15:12:56.559980] D:/goworkspace/gatesvr/locate/redis/locator_test.go:46 due
+INFO[2025/07/22 15:12:56.559980] D:/goworkspace/gatesvr/locate/redis/locator_test.go:47
+INFO[2025/07/22 15:12:56.559980] D:/goworkspace/gatesvr/locate/redis/locator_test.go:48 123456
+INFO[2025/07/22 15:13:12.474039] locator.go:59 redis locator init &{{{}} [127.0.0.1:6379] 0  123456 3 0xc00007a1c0 due}
+INFO[2025/07/22 16:00:12.587281] D:/goworkspace/gatesvr/locate/redis/locator.go:45 redis locator: &{context.Background [127.0.0.1:6379] %!s(int=0)  123456 %!s(int=3) <nil> due}
+INFO[2025/07/22 16:00:33.081586] D:/goworkspace/gatesvr/locate/redis/locator.go:45 redis locator: &{context.Background [127.0.0.1:6379] %!s(int=0)  123456 %!s(int=3) <nil> due}
+INFO[2025/07/22 16:01:06.158062] D:/goworkspace/gatesvr/locate/redis/locator.go:45 redis locator: &{context.Background [127.0.0.1:6379] %!s(int=0)  123456 %!s(int=3) <nil> due}
+INFO[2025/07/22 16:01:59.149226] D:/goworkspace/gatesvr/locate/redis/locator.go:45 redis locator: &{context.Background [127.0.0.1:6379] %!s(int=0)  123456 %!s(int=3) <nil> due}
+INFO[2025/07/22 16:02:56.220209] D:/goworkspace/gatesvr/locate/redis/locator.go:45 redis locator: &{context.Background [127.0.0.1:6379] %!s(int=0) ss 123456 %!s(int=3) <nil> due}

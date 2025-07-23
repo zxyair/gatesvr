@@ -1,0 +1,17 @@
+INFO[2025/07/22 15:58:29.570673] D:/goworkspace/gatesvr/locate/redis/locator.go:45 redis locator: &{context.Background [127.0.0.1:6379] %!s(int=0) gate 123456 %!s(int=3) <nil> due}
+FATA[2025/07/22 15:58:29.604341] D:/goworkspace/gatesvr/internal/link/node.go:409 user locate event watch failed: WRONGPASS invalid username-password pair or user is disabled.
+Stack:
+1.gatesvr/internal/link.(*NodeLinker).WatchUserLocate
+	D:/goworkspace/gatesvr/internal/link/node.go:409
+2.gatesvr/gate.(*proxy).watch
+	D:/goworkspace/gatesvr/gate/proxy.go:98
+3.gatesvr/gate.(*Gate).Start
+	D:/goworkspace/gatesvr/gate/gate.go:83
+4.gatesvr.(*Container).doStartComponents
+	D:/goworkspace/gatesvr/container.go:72
+5.gatesvr.(*Container).Serve
+	D:/goworkspace/gatesvr/container.go:51
+6.main.main
+	D:/goworkspace/gatesvr/alltest/gatestart/main.go:30
+7.runtime.main
+	C:/Users/xyxvzhang/sdk/go1.24.4/src/runtime/proc.go:283

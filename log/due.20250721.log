@@ -1,0 +1,14 @@
+FATA[2025/07/21 16:19:11.113032] gate.go:209 register cluster instance failed: context deadline exceeded
+FATA[2025/07/21 16:19:49.226717] gate.go:209 register cluster instance failed: context deadline exceeded
+FATA[2025/07/21 16:22:47.247790] gate.go:209 register cluster instance failed: context deadline exceeded
+FATA[2025/07/21 16:25:07.449194] gate.go:209 register cluster instance failed: context deadline exceeded
+FATA[2025/07/21 16:37:56.904088] gate.go:209 register cluster instance failed: Put "http://127.0.0.1:8500/v1/agent/service/register": dial tcp 127.0.0.1:8500: connectex: No connection could be made because the target machine actively refused it.
+FATA[2025/07/21 16:44:11.305271] gate.go:209 register cluster instance failed: Unexpected response code: 503 (Not found outbound for proxy:direct)
+FATA[2025/07/21 16:49:21.245627] gate.go:209 register cluster instance failed: Unexpected response code: 503 (Not found outbound for proxy:direct)
+WARN[2025/07/21 17:08:14.164543] container.go:113 process got signal interrupt, container will close
+WARN[2025/07/21 17:08:14.174312] server.go:140 tcp accept error: accept tcp [::]:3553: use of closed network connection
+WARN[2025/07/21 17:27:54.811661] container.go:113 process got signal interrupt, container will close
+WARN[2025/07/21 17:27:54.820634] server.go:140 tcp accept error: accept tcp [::]:3553: use of closed network connection
+WARN[2025/07/21 17:27:54.821688] container.go:113 process got signal interrupt, container will close
+WARN[2025/07/21 17:27:54.832745] server.go:140 tcp accept error: accept tcp 127.0.0.1:3355: use of closed network connection
+WARN[2025/07/21 17:27:54.833363] server.go:100 tcp accept connect error: accept tcp [::]:50494: use of closed network connection

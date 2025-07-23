@@ -1,0 +1,114 @@
+WARN[2025/07/22 11:41:37.435167] proxy.go:62 trigger event failed, cid: 8, uid: 0, event: connect, err: not found event
+INFO[2025/07/22 11:41:37.437202] main.go:73 I'm tcp client, and the current time is: 2025-07-22 11:41:37
+INFO[2025/07/22 11:41:37.438725] main.go:71 I'm tcp server, and the current time is: 2025-07-22 11:41:37
+INFO[2025/07/22 11:41:38.440846] main.go:73 I'm tcp client, and the current time is: 2025-07-22 11:41:38
+INFO[2025/07/22 11:41:38.440846] main.go:71 I'm tcp server, and the current time is: 2025-07-22 11:41:38
+INFO[2025/07/22 11:41:39.441644] main.go:73 I'm tcp client, and the current time is: 2025-07-22 11:41:39
+INFO[2025/07/22 11:41:39.441644] main.go:71 I'm tcp server, and the current time is: 2025-07-22 11:41:39
+INFO[2025/07/22 11:41:40.442618] main.go:73 I'm tcp client, and the current time is: 2025-07-22 11:41:40
+INFO[2025/07/22 11:41:40.443250] main.go:71 I'm tcp server, and the current time is: 2025-07-22 11:41:40
+INFO[2025/07/22 11:41:41.444026] main.go:73 I'm tcp client, and the current time is: 2025-07-22 11:41:41
+INFO[2025/07/22 11:41:41.444565] main.go:71 I'm tcp server, and the current time is: 2025-07-22 11:41:41
+INFO[2025/07/22 11:41:42.444825] main.go:73 I'm tcp client, and the current time is: 2025-07-22 11:41:42
+INFO[2025/07/22 11:41:42.445380] main.go:71 I'm tcp server, and the current time is: 2025-07-22 11:41:42
+INFO[2025/07/22 11:41:43.446070] main.go:73 I'm tcp client, and the current time is: 2025-07-22 11:41:43
+INFO[2025/07/22 11:41:43.446717] main.go:71 I'm tcp server, and the current time is: 2025-07-22 11:41:43
+INFO[2025/07/22 11:41:44.447509] main.go:73 I'm tcp client, and the current time is: 2025-07-22 11:41:44
+INFO[2025/07/22 11:41:44.447509] main.go:71 I'm tcp server, and the current time is: 2025-07-22 11:41:44
+INFO[2025/07/22 11:41:45.448462] main.go:73 I'm tcp client, and the current time is: 2025-07-22 11:41:45
+INFO[2025/07/22 11:41:45.448462] main.go:71 I'm tcp server, and the current time is: 2025-07-22 11:41:45
+WARN[2025/07/22 11:41:46.440468] container.go:113 process got signal interrupt, container will close
+WARN[2025/07/22 11:41:46.443621] proxy.go:62 trigger event failed, cid: 8, uid: 0, event: disconnect, err: not found event
+WARN[2025/07/22 14:32:35.920080] proxy.go:62 trigger event failed, cid: 9, uid: 0, event: connect, err: not found event
+WARN[2025/07/22 14:32:35.921883] proxy.go:89 deliver message failed, cid: 9 uid: 0 seq: 1 route: 0 err: not found route
+WARN[2025/07/22 14:37:30.709782] container.go:113 process got signal interrupt, container will close
+WARN[2025/07/22 14:37:30.711404] container.go:113 process got signal interrupt, container will close
+WARN[2025/07/22 14:37:30.715163] D:/goworkspace/gatesvr/container.go:113 process got signal interrupt, container will close
+WARN[2025/07/22 14:37:30.719649] server.go:100 tcp accept connect error: accept tcp [::]:62219: use of closed network connection
+WARN[2025/07/22 14:37:30.724947] proxy.go:62 trigger event failed, cid: 9, uid: 0, event: disconnect, err: not found event
+WARN[2025/07/22 14:37:30.731818] server.go:140 tcp accept error: accept tcp [::]:3553: use of closed network connection
+WARN[2025/07/22 14:37:30.732411] server.go:100 tcp accept connect error: accept tcp [::]:61788: use of closed network connection
+WARN[2025/07/22 15:36:50.612644] D:/goworkspace/gatesvr/container.go:113 process got signal interrupt, container will close
+WARN[2025/07/22 15:36:50.621602] D:/goworkspace/gatesvr/network/tcp/server.go:140 tcp accept error: accept tcp [::]:3553: use of closed network connection
+WARN[2025/07/22 15:36:56.217999] D:/goworkspace/gatesvr/container.go:113 process got signal interrupt, container will close
+WARN[2025/07/22 15:36:56.226185] D:/goworkspace/gatesvr/network/tcp/server.go:140 tcp accept error: accept tcp [::]:3553: use of closed network connection
+WARN[2025/07/22 15:36:56.226713] D:/goworkspace/gatesvr/internal/transporter/internal/server/server.go:100 tcp accept connect error: accept tcp [::]:53644: use of closed network connection
+WARN[2025/07/22 15:38:38.517118] D:/goworkspace/gatesvr/container.go:113 process got signal interrupt, container will close
+WARN[2025/07/22 15:38:38.525125] D:/goworkspace/gatesvr/network/tcp/server.go:140 tcp accept error: accept tcp [::]:3553: use of closed network connection
+WARN[2025/07/22 15:38:38.525684] D:/goworkspace/gatesvr/internal/transporter/internal/server/server.go:100 tcp accept connect error: accept tcp [::]:53872: use of closed network connection
+INFO[2025/07/22 15:38:41.655545] D:/goworkspace/gatesvr/locate/redis/options.go:61 [127.0.0.1:6379]
+INFO[2025/07/22 15:38:41.657683] D:/goworkspace/gatesvr/locate/redis/options.go:62 0
+INFO[2025/07/22 15:38:41.657683] D:/goworkspace/gatesvr/locate/redis/options.go:63 3
+INFO[2025/07/22 15:38:41.658224] D:/goworkspace/gatesvr/locate/redis/options.go:64 due
+INFO[2025/07/22 15:38:41.658224] D:/goworkspace/gatesvr/locate/redis/options.go:65
+INFO[2025/07/22 15:38:41.658224] D:/goworkspace/gatesvr/locate/redis/options.go:66 123456
+WARN[2025/07/22 15:40:05.669466] D:/goworkspace/gatesvr/container.go:113 process got signal interrupt, container will close
+WARN[2025/07/22 15:40:05.675178] D:/goworkspace/gatesvr/network/tcp/server.go:140 tcp accept error: accept tcp [::]:3553: use of closed network connection
+INFO[2025/07/22 15:40:07.383255] D:/goworkspace/gatesvr/locate/redis/options.go:61 [127.0.0.1:6379]
+INFO[2025/07/22 15:40:07.385261] D:/goworkspace/gatesvr/locate/redis/options.go:62 0
+INFO[2025/07/22 15:40:07.385261] D:/goworkspace/gatesvr/locate/redis/options.go:63 3
+INFO[2025/07/22 15:40:07.385261] D:/goworkspace/gatesvr/locate/redis/options.go:64 due
+INFO[2025/07/22 15:40:07.385261] D:/goworkspace/gatesvr/locate/redis/options.go:65
+INFO[2025/07/22 15:40:07.385261] D:/goworkspace/gatesvr/locate/redis/options.go:66 123456
+WARN[2025/07/22 15:40:25.536588] D:/goworkspace/gatesvr/container.go:113 process got signal interrupt, container will close
+WARN[2025/07/22 15:40:25.542724] D:/goworkspace/gatesvr/network/tcp/server.go:140 tcp accept error: accept tcp [::]:3553: use of closed network connection
+WARN[2025/07/22 15:40:25.543242] D:/goworkspace/gatesvr/internal/transporter/internal/server/server.go:100 tcp accept connect error: accept tcp [::]:53995: use of closed network connection
+INFO[2025/07/22 15:40:27.128118] D:/goworkspace/gatesvr/locate/redis/options.go:61 [127.0.0.1:6379]
+INFO[2025/07/22 15:40:27.130114] D:/goworkspace/gatesvr/locate/redis/options.go:62 0
+INFO[2025/07/22 15:40:27.130114] D:/goworkspace/gatesvr/locate/redis/options.go:63 3
+INFO[2025/07/22 15:40:27.130114] D:/goworkspace/gatesvr/locate/redis/options.go:64 due
+INFO[2025/07/22 15:40:27.130114] D:/goworkspace/gatesvr/locate/redis/options.go:65
+INFO[2025/07/22 15:40:27.130114] D:/goworkspace/gatesvr/locate/redis/options.go:66 123456
+WARN[2025/07/22 15:40:37.945679] D:/goworkspace/gatesvr/container.go:113 process got signal interrupt, container will close
+WARN[2025/07/22 15:40:37.952003] D:/goworkspace/gatesvr/network/tcp/server.go:140 tcp accept error: accept tcp [::]:3553: use of closed network connection
+WARN[2025/07/22 15:40:37.953029] D:/goworkspace/gatesvr/internal/transporter/internal/server/server.go:100 tcp accept connect error: accept tcp [::]:54028: use of closed network connection
+INFO[2025/07/22 15:40:39.874510] D:/goworkspace/gatesvr/locate/redis/options.go:61 [127.0.0.1:6379]
+INFO[2025/07/22 15:40:39.876050] D:/goworkspace/gatesvr/locate/redis/options.go:62 0
+INFO[2025/07/22 15:40:39.876050] D:/goworkspace/gatesvr/locate/redis/options.go:63 3
+INFO[2025/07/22 15:40:39.876050] D:/goworkspace/gatesvr/locate/redis/options.go:64 due
+INFO[2025/07/22 15:40:39.876050] D:/goworkspace/gatesvr/locate/redis/options.go:65
+INFO[2025/07/22 15:40:39.876050] D:/goworkspace/gatesvr/locate/redis/options.go:66 123456
+WARN[2025/07/22 15:41:01.653108] D:/goworkspace/gatesvr/container.go:113 process got signal interrupt, container will close
+WARN[2025/07/22 15:41:01.661736] D:/goworkspace/gatesvr/network/tcp/server.go:140 tcp accept error: accept tcp [::]:3553: use of closed network connection
+INFO[2025/07/22 15:41:03.418204] D:/goworkspace/gatesvr/locate/redis/options.go:61 [127.0.0.1:6379]
+INFO[2025/07/22 15:41:03.419708] D:/goworkspace/gatesvr/locate/redis/options.go:62 0
+INFO[2025/07/22 15:41:03.419708] D:/goworkspace/gatesvr/locate/redis/options.go:63 3
+INFO[2025/07/22 15:41:03.419708] D:/goworkspace/gatesvr/locate/redis/options.go:64 due
+INFO[2025/07/22 15:41:03.419708] D:/goworkspace/gatesvr/locate/redis/options.go:65 aaa
+INFO[2025/07/22 15:41:03.419708] D:/goworkspace/gatesvr/locate/redis/options.go:66 123456
+FATA[2025/07/22 15:41:03.451238] D:/goworkspace/gatesvr/internal/link/node.go:409 user locate event watch failed: WRONGPASS invalid username-password pair or user is disabled.
+Stack:
+1.gatesvr/internal/link.(*NodeLinker).WatchUserLocate
+	D:/goworkspace/gatesvr/internal/link/node.go:409
+2.gatesvr/gate.(*proxy).watch
+	D:/goworkspace/gatesvr/gate/proxy.go:98
+3.gatesvr/gate.(*Gate).Start
+	D:/goworkspace/gatesvr/gate/gate.go:83
+4.gatesvr.(*Container).doStartComponents
+	D:/goworkspace/gatesvr/container.go:72
+5.gatesvr.(*Container).Serve
+	D:/goworkspace/gatesvr/container.go:51
+6.main.main
+	D:/goworkspace/gatesvr/alltest/gatestart/main.go:30
+7.runtime.main
+	C:/Users/xyxvzhang/sdk/go1.24.4/src/runtime/proc.go:283
+INFO[2025/07/22 15:51:31.499313] D:/goworkspace/gatesvr/locate/redis/locator.go:45 redis locator: &{context.Background [127.0.0.1:6379] %!s(int=0)  12345 %!s(int=3) <nil> due}
+FATA[2025/07/22 15:51:31.530670] D:/goworkspace/gatesvr/internal/link/node.go:409 user locate event watch failed: WRONGPASS invalid username-password pair or user is disabled.
+Stack:
+1.gatesvr/internal/link.(*NodeLinker).WatchUserLocate
+	D:/goworkspace/gatesvr/internal/link/node.go:409
+2.gatesvr/gate.(*proxy).watch
+	D:/goworkspace/gatesvr/gate/proxy.go:98
+3.gatesvr/gate.(*Gate).Start
+	D:/goworkspace/gatesvr/gate/gate.go:83
+4.gatesvr.(*Container).doStartComponents
+	D:/goworkspace/gatesvr/container.go:72
+5.gatesvr.(*Container).Serve
+	D:/goworkspace/gatesvr/container.go:51
+6.main.main
+	D:/goworkspace/gatesvr/alltest/gatestart/main.go:32
+7.runtime.main
+	C:/Users/xyxvzhang/sdk/go1.24.4/src/runtime/proc.go:283
+INFO[2025/07/22 15:57:56.059261] D:/goworkspace/gatesvr/locate/redis/locator.go:45 redis locator: &{context.Background [127.0.0.1:6379] %!s(int=0)  123456 %!s(int=3) <nil> due}
+WARN[2025/07/22 15:58:07.783315] D:/goworkspace/gatesvr/container.go:113 process got signal interrupt, container will close
+WARN[2025/07/22 15:58:07.797287] D:/goworkspace/gatesvr/network/tcp/server.go:140 tcp accept error: accept tcp [::]:3553: use of closed network connection
