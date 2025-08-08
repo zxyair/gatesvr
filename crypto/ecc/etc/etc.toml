@@ -1,0 +1,30 @@
+[crypto]
+    [crypto.ecc]
+        [crypto.ecc.encryptor]
+            # 共享信息。加解密时必需一致
+            s1 = ""
+            # 共享信息。加解密时必需一致
+            s2 = ""
+            # 公钥，可设置文件路径或公钥串
+            publicKey = ""
+        [crypto.ecc.decryptor]
+            # 共享信息。加解密时必需一致
+            s1 = ""
+            # 共享信息。加解密时必需一致
+            s2 = ""
+            # 私钥。可设置文件路径或私钥串
+            privateKey = ""
+        [crypto.ecc.signer]
+            # hash算法，不区分大小写。可选：SHA1 | SHA224 | SHA256 | SHA384 | SHA512
+            hash = "SHA256"
+            # 签名分隔符。由于ECDSA签名算法会产生两段签名串，因此需要通过分隔符将其拼接为一个签名
+            delimiter = " "
+            # 私钥。可设置文件路径或私钥串
+            privateKey = ""
+        [crypto.ecc.verifier]
+            # hash算法，不区分大小写。可选：SHA1 | SHA224 | SHA256 | SHA384 | SHA512
+            hash = "SHA256"
+            # 签名分隔符。由于ECDSA签名算法会产生两段签名串，因此需要通过分隔符将其拼接为一个签名
+            delimiter = " "
+            # 公钥，可设置文件路径或公钥串
+            publicKey = ""
