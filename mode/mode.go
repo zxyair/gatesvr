@@ -1,9 +1,9 @@
 package mode
 
 import (
-	"gatesvr/env"
 	"gatesvr/etc"
-	"gatesvr/flag"
+	"gatesvr/utils/env"
+	"gatesvr/utils/flag"
 )
 
 const (

@@ -8,21 +8,29 @@ import (
 	"gatesvr/encoding/json"
 	"gatesvr/log"
 	"gatesvr/network/tcp"
-	"gatesvr/utils/xtime"
-
-	"time"
 )
 
 // 路由号
 const greet = 1
+const (
+	publicKey  = "./pem/key.pub.pem"
+	privateKey = "./pem/key.pem"
+)
 
 func main() {
 	// 创建容器
 	container := gatesvr.NewContainer()
+	//encryptor := rsa.NewEncryptor(
+	//	rsa.WithEncryptorHash(hash.SHA256),
+	//	rsa.WithEncryptorPadding(rsa.OAEP),
+	//	rsa.WithEncryptorPublicKey(publicKey),
+	//	rsa.WithEncryptorPrivateKey(privateKey),
+	//)
 	// 创建客户端组件
 	component := client.NewClient(
 		client.WithClient(tcp.NewClient()),
 		client.WithCodec(json.DefaultCodec),
+		//client.WithEncryptor(encryptor),
 	)
 	// 初始化监听
 	initListen(component.Proxy())
@@ -68,11 +76,12 @@ func greetHandler(ctx *client.Context) {
 		return
 	}
 
-	log.Info(res.Message)
+	//log.Info(res.Message)
 
-	time.AfterFunc(time.Second, func() {
-		pushMessage(ctx.Conn())
-	})
+	//time.AfterFunc(time.Second, func() {
+	//	pushMessage(ctx.Conn())
+	//})
+	pushMessage(ctx.Conn())
 }
 
 // 请求
@@ -88,13 +97,15 @@ type greetRes struct {
 
 // 推送消息
 func pushMessage(conn *client.Conn) {
-	err := conn.Push(&cluster.Message{
+	msg := &cluster.Message{
 		Route: 1,
 		Data: &greetReq{
-			Message: fmt.Sprintf("I'm tcp client, and the current time is: %s", xtime.Now().Format(xtime.DateTime)),
-		},
-	})
+			Message: fmt.Sprintf("hello"),
+		}}
+	err := conn.Push(msg)
 	if err != nil {
 		log.Errorf("push message failed: %v", err)
 	}
+	log.Debugf("client推送消原始消息为: Route: %d, Data: %+v", msg.Route, msg.Data)
+
 }

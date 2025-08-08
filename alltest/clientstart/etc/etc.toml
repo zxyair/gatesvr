@@ -21,14 +21,50 @@ timezone = "Local"
     timeout = "5s"
     # 心跳间隔时间（秒），默认为10秒。设置为0则不启用心跳检测
     heartbeatInterval = "10s"
-
+[crypto]
+    # RSA设置
+    [crypto.rsa]
+        [crypto.rsa.encryptor]
+            # hash算法，不区分大小写。可选：SHA1 | SHA224 | SHA256 | SHA384 | SHA512
+            hash = "SHA256"
+            # 填充规则，不区分大小写。可选：NORMAL | OAEP
+            padding = "NORMAL"
+            # 标签，加解密时必需一致
+            label = ""
+            # 加密数据块大小，单位字节。由于加密数据长度限制，需要对加密数据进行分块儿加密
+            blockSize = 0
+            # 公钥，可设置文件路径或公钥串
+            publicKey = "./pem/key.pub.pem"
+        [crypto.rsa.decryptor]
+            # hash算法，不区分大小写。可选：SHA1 | SHA224 | SHA256 | SHA384 | SHA512
+            hash = "SHA256"
+            # 填充规则，不区分大小写。可选：NORMAL | OAEP
+            padding = "NORMAL"
+            # 标签。加解密时必需一致
+            label = ""
+            # 私钥。可设置文件路径或私钥串
+            privateKey = "./pem/key.pem"
+        [crypto.rsa.signer]
+            # hash算法，不区分大小写。可选：SHA1 | SHA224 | SHA256 | SHA384 | SHA512
+            hash = "SHA256"
+            # 填充规则，不区分大小写。可选：PKCS | PSS
+            padding = "PSS"
+            # 私钥。可设置文件路径或私钥串
+            privateKey = "./pem/key.pem"
+        [crypto.rsa.verifier]
+            # hash算法，不区分大小写。可选：SHA1 | SHA224 | SHA256 | SHA384 | SHA512
+            hash = "SHA256"
+            # 填充规则，不区分大小写。可选：PKCS | PSS
+            padding = "PSS"
+            # 公钥，可设置文件路径或公钥串
+            publicKey = ""
 [packet]
     # 字节序，默认为big。可选：little | big
     byteOrder = "big"
     # 路由字节数，默认为2字节
-    routeBytes = 4
+    routeBytes = 2
     # 序列号字节数，默认为2字节
-    seqBytes = 0
+    seqBytes = 2
     # 消息字节数，默认为5000字节
     bufferBytes = 100000
 
