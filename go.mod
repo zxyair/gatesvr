@@ -6,6 +6,8 @@ require (
 	dario.cat/mergo v1.0.2
 	github.com/BurntSushi/toml v1.5.0
 	github.com/bytedance/sonic v1.13.2
+	github.com/dobyte/due/transport/grpc/v2 v2.0.0-20250715105824-025d23fd0c6d
+	github.com/dobyte/due/v2 v2.2.7
 	github.com/ethereum/go-ethereum v1.16.1
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/go-redis/redis/v8 v8.11.5
@@ -48,7 +50,6 @@ require (
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/hashicorp/serf v0.10.1 // indirect
 	github.com/holiman/uint256 v1.3.2 // indirect
-	github.com/jonboulle/clockwork v0.3.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.8 // indirect
 	github.com/lestrrat-go/strftime v1.0.6 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect

@@ -13,8 +13,8 @@ import (
 	"gatesvr/core/chains"
 	"gatesvr/errors"
 	"gatesvr/session"
-	"gatesvr/task"
 	"gatesvr/transport"
+	"gatesvr/utils/task"
 	"gatesvr/utils/xcall"
 
 	"github.com/jinzhu/copier"

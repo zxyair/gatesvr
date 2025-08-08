@@ -1,4 +1,5 @@
 *.log
+* text=auto
 network/tcp/log/
 functiontest/send-and-receive-message-compress-encrypto/gatestart/log/
 functiontest/send-and-receive-message-compress-encrypto/clientstart/log/

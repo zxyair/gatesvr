@@ -6,8 +6,8 @@ import (
 	"gatesvr/core/chains"
 	"gatesvr/errors"
 	"gatesvr/session"
-	"gatesvr/task"
 	"gatesvr/transport"
+	"gatesvr/utils/task"
 
 	"sync/atomic"
 	"time"
