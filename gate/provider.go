@@ -5,6 +5,7 @@ import (
 	"gatesvr/cluster"
 	"gatesvr/errors"
 	"gatesvr/log"
+	"gatesvr/packet"
 	"gatesvr/session"
 	"gatesvr/utils/xcall"
 )
@@ -68,7 +69,13 @@ func (p *provider) Disconnect(ctx context.Context, kind session.Kind, target int
 
 // Push 发送消息
 func (p *provider) Push(ctx context.Context, kind session.Kind, target int64, message []byte) error {
-	err := p.gate.session.Push(kind, target, message)
+
+	messageEncry, err := p.processMessage(message)
+	if err != nil {
+		log.Errorf("processMessage failed: %v", err)
+		return err
+	}
+	err = p.gate.session.Push(kind, target, messageEncry)
 
 	if kind == session.User && errors.Is(err, errors.ErrNotFoundSession) {
 		xcall.Go(func() {
@@ -83,12 +90,22 @@ func (p *provider) Push(ctx context.Context, kind session.Kind, target int64, me
 
 // Multicast 推送组播消息
 func (p *provider) Multicast(ctx context.Context, kind session.Kind, targets []int64, message []byte) (int64, error) {
-	return p.gate.session.Multicast(kind, targets, message)
+	messageEncry, err := p.processMessage(message)
+	if err != nil {
+		log.Errorf("processMessage failed: %v", err)
+		return 0, err
+	}
+	return p.gate.session.Multicast(kind, targets, messageEncry)
 }
 
 // Broadcast 推送广播消息
 func (p *provider) Broadcast(ctx context.Context, kind session.Kind, message []byte) (int64, error) {
-	return p.gate.session.Broadcast(kind, message)
+	messageEncry, err := p.processMessage(message)
+	if err != nil {
+		log.Errorf("processMessage failed: %v", err)
+		return 0, err
+	}
+	return p.gate.session.Broadcast(kind, messageEncry)
 }
 
 // GetState 获取状态
@@ -99,4 +116,45 @@ func (p *provider) GetState() (cluster.State, error) {
 // SetState 设置状态
 func (p *provider) SetState(state cluster.State) error {
 	return nil
+}
+
+func (p *provider) processMessage(message []byte) ([]byte, error) {
+	//拆包
+	msg, err := packet.UnpackMessage(message)
+	if err != nil {
+		log.Errorf("unpack message failed: %v", err)
+		return nil, err
+	}
+	//log.Debugf("gate 对响应消息拆包后消息为: %v", msg)
+	//log.Debugf("gate 收到响应消息 %d", msg.Seq)
+
+	//压缩
+	if p.gate.opts.compressor != nil {
+		msg.Buffer, err = p.gate.opts.compressor.Compress(msg.Buffer)
+		//log.Debugf("gate 对响应消息压缩后消息为: %v,长度为%d", msg.Buffer, len(msg.Buffer))
+		if err != nil {
+			log.Errorf("compress failed: %v", err)
+			return nil, err
+		}
+	}
+	//log.Debugf("gate 对响应消息压缩后消息为: %v,长度为%d", compressedBuffer, len(compressedBuffer))
+
+	//加密
+	if p.gate.opts.encryptor != nil {
+		encryptMsgBuffer, err := p.gate.opts.encryptor.Encrypt(msg.Buffer)
+		if err != nil {
+			return nil, err
+		}
+		//log.Debugf("gate 对响应消息加密后消息为: %v,消息长度为%d", encryptMsgBuffer, len(encryptMsgBuffer))
+		msg.Buffer = encryptMsgBuffer
+	}
+
+	//打包
+	messageEncry, err := packet.PackMessage(msg)
+	//log.Debugf("gate 发送给client的响应消息为: %v", messageEncry)
+	if err != nil {
+		log.Errorf("pack message failed: %v", err)
+		return nil, err
+	}
+	return messageEncry, nil
 }

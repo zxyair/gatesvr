@@ -46,12 +46,12 @@ func TestClient_Simple(t *testing.T) {
 
 	ticker := time.NewTicker(time.Second)
 	defer ticker.Stop()
-
+	var i int32
 	for {
 		select {
 		case <-ticker.C:
 			msg, err := packet.PackMessage(&packet.Message{
-				Seq:    1,
+				Seq:    int32(atomic.AddInt32(&i, 1)),
 				Route:  1,
 				Buffer: []byte("hello server~~"),
 			})
@@ -232,4 +232,7 @@ func convBytes(bytes int) string {
 	default:
 		return fmt.Sprintf("%.2fTB", float64(bytes)/TB)
 	}
+}
+func TestClient_MaxConnectionCount(t *testing.T) {
+	doPressureTest(5100, 0, 0)
 }

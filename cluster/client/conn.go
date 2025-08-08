@@ -86,13 +86,24 @@ func (c *Conn) Push(message *cluster.Message) error {
 			buffer = v
 		} else {
 			buffer, err = c.client.opts.codec.Marshal(message.Data)
+			//log.Debugf("client推送消息序列化后为: %v,消息长度%d", buffer, len(buffer))
+
+			if err != nil {
+				return err
+			}
+		}
+		if c.client.opts.compressor != nil {
+			buffer, err = c.client.opts.compressor.Compress(buffer)
+			//log.Debugf("client推送消息压缩后为: %v,消息长度：%d", buffer, len(buffer))
 			if err != nil {
 				return err
 			}
 		}
 
+		//加密
 		if c.client.opts.encryptor != nil {
 			buffer, err = c.client.opts.encryptor.Encrypt(buffer)
+			//log.Debugf("client推送消息加密后为: %v,消息长度：%d", buffer, len(buffer))
 			if err != nil {
 				return err
 			}
@@ -100,10 +111,12 @@ func (c *Conn) Push(message *cluster.Message) error {
 	}
 
 	msg, err := packet.PackMessage(&packet.Message{
-		Seq:    message.Seq,
-		Route:  message.Route,
-		Buffer: buffer,
+		Seq:        message.Seq,
+		Route:      message.Route,
+		IsCritical: message.IsCritical,
+		Buffer:     buffer,
 	})
+	//log.Debugf("client推送消息打包后为: %v", msg)
 	if err != nil {
 		return err
 	}
@@ -112,6 +125,6 @@ func (c *Conn) Push(message *cluster.Message) error {
 }
 
 // Close 关闭连接
-func (c *Conn) Close() error {
-	return c.conn.Close()
+func (c *Conn) Close(force ...bool) error {
+	return c.conn.Close(force...)
 }

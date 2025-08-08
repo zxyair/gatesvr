@@ -2,6 +2,7 @@ package session
 
 import (
 	"gatesvr/errors"
+	"gatesvr/log"
 	"gatesvr/network"
 	"net"
 	"sync"
@@ -36,6 +37,29 @@ func NewSession() *Session {
 		conns: make(map[int64]network.Conn),
 		users: make(map[int64]network.Conn),
 	}
+}
+
+// FindConn 添加连接
+func (s *Session) FindConn(kind Kind, target int64) (network.Conn, error) {
+	s.rw.RLock()
+	defer s.rw.RUnlock()
+
+	switch kind {
+	case Conn:
+		if conn, ok := s.conns[target]; ok {
+			return conn, nil
+		}
+	case User:
+		if conn, ok := s.users[target]; ok {
+			return conn, nil
+		}
+	default:
+		err := errors.ErrInvalidSessionKind
+		return nil, err
+
+	}
+
+	return nil, errors.ErrNotFoundSession
 }
 
 // AddConn 添加连接
@@ -105,8 +129,8 @@ func (s *Session) Bind(cid, uid int64) error {
 	}
 
 	conn.Bind(uid)
+	log.Debugf("conn绑定后详情%+v", conn)
 	s.users[uid] = conn
-
 	return nil
 }
 

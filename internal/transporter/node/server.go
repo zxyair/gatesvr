@@ -62,7 +62,6 @@ func (s *Server) deliver(conn *server.Conn, data []byte) error {
 	if err != nil {
 		return err
 	}
-
 	var (
 		gid string
 		nid string
@@ -76,7 +75,6 @@ func (s *Server) deliver(conn *server.Conn, data []byte) error {
 	default:
 		return errors.ErrIllegalRequest
 	}
-
 	if err = s.provider.Deliver(context.Background(), gid, nid, cid, uid, message); seq == 0 {
 		return err
 	} else {

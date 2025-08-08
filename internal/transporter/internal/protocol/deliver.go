@@ -14,7 +14,7 @@ const (
 )
 
 // EncodeDeliverReq 编码投递消息请求
-// 协议：size + header + route + seq + cid + uid + <message packet>
+// 协议：size4 + header1 + route1 + seq8 + cid8 + uid8 + <message packet>
 func EncodeDeliverReq(seq uint64, cid int64, uid int64, message []byte) buffer.Buffer {
 	buf := buffer.NewNocopyBuffer()
 	writer := buf.Malloc(deliverReqBytes)
@@ -24,7 +24,7 @@ func EncodeDeliverReq(seq uint64, cid int64, uid int64, message []byte) buffer.B
 	writer.WriteUint64s(binary.BigEndian, seq)
 	writer.WriteInt64s(binary.BigEndian, cid, uid)
 	buf.Mount(message)
-
+	//log.Debugf("client 对请求protocol编码后的消息内容: %v,长度为%d", buf.Bytes(), len(buf.Bytes())) //输出buf中的内容，用log输出，用于调试
 	return buf
 }
 
@@ -50,6 +50,7 @@ func DecodeDeliverReq(data []byte) (seq uint64, cid int64, uid int64, message []
 
 	message = data[deliverReqBytes:]
 
+	//log.Debugf("node对请求protocol解码后的消息内容，seq: %v, cid: %v, uid: %v, message: %v", seq, cid, uid, message)
 	return
 }
 

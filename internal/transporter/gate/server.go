@@ -6,11 +6,14 @@ import (
 	"gatesvr/internal/transporter/internal/protocol"
 	"gatesvr/internal/transporter/internal/route"
 	"gatesvr/internal/transporter/internal/server"
+	"gatesvr/log"
+	"sync"
 )
 
 type Server struct {
 	*server.Server
-	provider Provider
+	provider          Provider
+	broadcastMessages sync.Map
 }
 
 func NewServer(addr string, provider Provider) (*Server, error) {
@@ -18,8 +21,8 @@ func NewServer(addr string, provider Provider) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	s := &Server{Server: serv, provider: provider}
+	broadcastMessages := sync.Map{}
+	s := &Server{Server: serv, provider: provider, broadcastMessages: broadcastMessages}
 	s.init()
 
 	return s, nil
@@ -30,11 +33,11 @@ func (s *Server) init() {
 	s.RegisterHandler(route.Unbind, s.unbind)
 	s.RegisterHandler(route.GetIP, s.getIP)
 	s.RegisterHandler(route.Stat, s.stat)
-	s.RegisterHandler(route.IsOnline, s.isOnline)
 	s.RegisterHandler(route.Disconnect, s.disconnect)
 	s.RegisterHandler(route.Push, s.push)
 	s.RegisterHandler(route.Multicast, s.multicast)
 	s.RegisterHandler(route.Broadcast, s.broadcast)
+	s.RegisterHandler(route.IsOnline, s.isOnline)
 }
 
 // 绑定用户
@@ -131,6 +134,7 @@ func (s *Server) push(conn *server.Conn, data []byte) error {
 	if err = s.provider.Push(context.Background(), kind, target, message); seq == 0 {
 		return err
 	} else {
+		//发送确认机制
 		return conn.Send(protocol.EncodePushRes(seq, codes.ErrorToCode(err)))
 	}
 }
@@ -151,11 +155,17 @@ func (s *Server) multicast(conn *server.Conn, data []byte) error {
 
 // 推送广播消息
 func (s *Server) broadcast(conn *server.Conn, data []byte) error {
+
 	seq, kind, message, err := protocol.DecodeBroadcastReq(data)
+	log.Debugf("广播消息：%+v,序列号%v", message, seq)
 	if err != nil {
 		return err
 	}
-
+	if _, ok := s.broadcastMessages.Load(seq); ok {
+		return nil
+	}
+	s.broadcastMessages.Store(seq, 1)
+	log.Debugf("map中信息：%+v", s.broadcastMessages)
 	if total, err := s.provider.Broadcast(context.Background(), kind, message); seq == 0 {
 		return err
 	} else {

@@ -24,11 +24,13 @@ const (
 const (
 	defaultSizeBytes          = 4
 	defaultHeaderBytes        = 1
+	defaultFlagBytes          = 1
 	defaultRouteBytes         = 2
 	defaultSeqBytes           = 2
 	defaultBufferBytes        = 5000
 	defaultHeartbeatTime      = false
 	defaultHeartbeatTimeBytes = 8
+	defaultMagicBytes         = 2
 )
 
 const (

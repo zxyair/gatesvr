@@ -2,8 +2,8 @@ package errors
 
 import (
 	"fmt"
-	"gatesvr/codes"
-	"gatesvr/stack"
+	"gatesvr/utils/codes"
+	"gatesvr/utils/stack"
 	"io"
 )
 
@@ -55,6 +55,8 @@ var (
 	ErrWriterClosing           = New("writer is closing")
 	ErrDeadlineExceeded        = New("deadline exceeded")
 	ErrMissingResolver         = New("missing resolver")
+	ErrBlackUser               = New("black user")
+	ErrServerCircuitBreaker    = New("The service is in circuit breaker state")
 )
 
 // NewError 新建一个错误

@@ -92,12 +92,13 @@ func (c *clientConn) Send(msg []byte) error {
 
 // Push 发送消息（异步）
 func (c *clientConn) Push(msg []byte) (err error) {
+
 	if err = c.checkState(); err != nil {
 		return
 	}
-
 	c.rw.RLock()
 	c.chWrite <- chWrite{typ: dataPacket, msg: msg}
+	//log.Debugf("push给conn的 msg:%v", msg)
 	c.rw.RUnlock()
 
 	return
@@ -354,4 +355,8 @@ func (c *clientConn) write() {
 // 是否已关闭
 func (c *clientConn) isClosed() bool {
 	return network.ConnState(atomic.LoadInt32(&c.state)) == network.ConnClosed
+}
+func (c *clientConn) CheckAndSendPendingMessages() error {
+	//TODO implement me
+	return nil
 }

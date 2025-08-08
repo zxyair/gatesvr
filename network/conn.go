@@ -38,5 +38,7 @@ type (
 		RemoteIP() (string, error)
 		// RemoteAddr 获取远端地址
 		RemoteAddr() (net.Addr, error)
+
+		CheckAndSendPendingMessages() error
 	}
 )

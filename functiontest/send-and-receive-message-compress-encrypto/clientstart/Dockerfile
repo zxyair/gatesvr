@@ -17,7 +17,7 @@ RUN go mod download
 COPY . .
 
 # 构建可执行文件（禁用CGO，减小镜像大小）
-RUN CGO_ENABLED=0 GOOS=linux go build -o client
+RUN CGO_ENABLED=0 GOOS=linux go build -o server
 
 # 使用轻量级运行时镜像
 FROM alpine:latest
@@ -35,4 +35,4 @@ COPY --from=builder /app/server .
 EXPOSE 3353
 
 # 设置容器启动命令
-CMD ["./client"]
+CMD ["./server"]

@@ -15,7 +15,7 @@ const (
 )
 
 // EncodePushReq 编码推送请求
-// 协议：size + header + route + seq + session kind + target + <message packet>
+// 协议：size4 + header1 + route1 + seq8 + session kind1 + target8 + <message packet>
 func EncodePushReq(seq uint64, kind session.Kind, target int64, message buffer.Buffer) buffer.Buffer {
 	buf := buffer.NewNocopyBuffer()
 	writer := buf.Malloc(pushReqBytes)
@@ -26,6 +26,8 @@ func EncodePushReq(seq uint64, kind session.Kind, target int64, message buffer.B
 	writer.WriteUint8s(uint8(kind))
 	writer.WriteInt64s(binary.BigEndian, target)
 	buf.Mount(message)
+
+	//log.Debugf("node返回响应后protocol编码后为: %v", buf.Bytes())
 
 	return buf
 }
@@ -55,7 +57,7 @@ func DecodePushReq(data []byte) (seq uint64, kind session.Kind, target int64, me
 	}
 
 	message = data[pushReqBytes:]
-
+	//log.Debugf("gate收到返回响应后protocol解码后为: %v,长度为%d", message, len(message))
 	return
 }
 

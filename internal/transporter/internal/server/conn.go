@@ -29,6 +29,8 @@ type Conn struct {
 	InsID             string             // 集群ID
 }
 
+var i int32
+
 func newConn(server *Server, conn net.Conn) *Conn {
 	c := &Conn{}
 	c.ctx, c.cancel = context.WithCancel(context.Background())
@@ -37,7 +39,6 @@ func newConn(server *Server, conn net.Conn) *Conn {
 	c.state = def.ConnOpened
 	c.chData = make(chan chData, 10240)
 	c.lastHeartbeatTime = xtime.Now().Unix()
-
 	go c.read()
 
 	go c.process()
@@ -122,7 +123,6 @@ func (c *Conn) read() {
 				route:       route,
 				data:        data,
 			}
-
 			c.rw.RUnlock()
 		}
 	}
@@ -157,7 +157,6 @@ func (c *Conn) process() {
 				if !ok {
 					continue
 				}
-
 				if err := handler(c, ch.data); err != nil && !errors.Is(err, errors.ErrNotFoundUserLocation) {
 					log.Warnf("process route %d message failed: %v", ch.route, err)
 				}

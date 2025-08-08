@@ -3,7 +3,6 @@ package protocol
 import (
 	"encoding/binary"
 	"gatesvr/errors"
-
 	"io"
 	"sync"
 )

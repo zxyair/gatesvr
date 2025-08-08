@@ -4,11 +4,16 @@ import (
 	"gatesvr/log"
 	"gatesvr/network/tcp"
 	"gatesvr/packet"
+	"sync/atomic"
 
 	"gatesvr/network"
 	"net/http"
 	_ "net/http/pprof"
 	"testing"
+)
+
+var (
+	seqCounter int32 // 新增包级计数器
 )
 
 func TestServer_Simple(t *testing.T) {
@@ -38,9 +43,8 @@ func TestServer_Simple(t *testing.T) {
 		}
 
 		log.Infof("receive message from client, cid: %d, seq: %d, route: %d, msg: %s", conn.ID(), message.Seq, message.Route, string(message.Buffer))
-
 		msg, err = packet.PackMessage(&packet.Message{
-			Seq:    1,
+			Seq:    atomic.AddInt32(&seqCounter, 1), // 使用包级计数器
 			Route:  1,
 			Buffer: []byte("I'm fine~~"),
 		})
@@ -103,6 +107,23 @@ func TestServer_Benchmark(t *testing.T) {
 			log.Errorf("pprof server start failed: %v", err)
 		}
 	}()
+
+	select {}
+}
+func TestServer_MaxConnectionCount(t *testing.T) {
+	server := tcp.NewServer()
+
+	server.OnConnect(func(conn network.Conn) {
+		log.Infof("connection is opened, connection id: %d", conn.ID())
+	})
+
+	server.OnDisconnect(func(conn network.Conn) {
+		log.Infof("connection is closed, connection id: %d", conn.ID())
+	})
+
+	if err := server.Start(); err != nil {
+		log.Fatalf("start server failed: %v", err)
+	}
 
 	select {}
 }

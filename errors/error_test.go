@@ -2,8 +2,8 @@ package errors_test
 
 import (
 	"fmt"
-	"gatesvr/codes"
 	"gatesvr/errors"
+	"gatesvr/utils/codes"
 
 	"testing"
 )

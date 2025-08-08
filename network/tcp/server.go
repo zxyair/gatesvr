@@ -50,6 +50,21 @@ func (s *server) Start() error {
 
 	go s.serve()
 
+	//// 启动协程定期清理过期消息
+	//xcall.Go(func() {
+	//	ticker := time.NewTicker(time.Minute * 3) // 每分钟清理一次
+	//	defer ticker.Stop()
+	//
+	//	for {
+	//		select {
+	//		case <-ticker.C:
+	//			s.connMgr.clearExpiredMessages()
+	//		default:
+	//			continue
+	//		}
+	//	}
+	//})
+
 	return nil
 }
 

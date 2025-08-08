@@ -69,7 +69,7 @@ func (c *Conn) dial() {
 			retry++
 
 			if retry >= maxRetryTimes {
-				log.Warnf("dial failed: %v", err)
+				//log.Warnf("dial failed: %v", err)
 				c.close()
 				break
 			} else {

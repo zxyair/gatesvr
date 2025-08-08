@@ -267,6 +267,9 @@ func (l *GateLinker) doIndirectIsOnline(ctx context.Context, args *IsOnlineArgs)
 		return client.IsOnline(ctx, args.Kind, args.Target)
 	})
 
+	if err != nil {
+		return false, err
+	}
 	return v.(bool), err
 }
 
@@ -324,6 +327,8 @@ func (l *GateLinker) Push(ctx context.Context, args *PushArgs) error {
 // 直接推送
 func (l *GateLinker) doDirectPush(ctx context.Context, args *PushArgs) error {
 	message, err := l.PackMessage(args.Message, true)
+	//log.Debugf("node返回响应打包后为: %v", message.Bytes())
+
 	if err != nil {
 		return err
 	}
@@ -446,7 +451,7 @@ func (l *GateLinker) Broadcast(ctx context.Context, args *BroadcastArgs) error {
 				return err
 			}
 
-			return client.Broadcast(ctx, args.Kind, message)
+			return client.Broadcast(ctx, uint64(args.Message.Seq), args.Kind, message)
 		})
 
 		return true
@@ -533,6 +538,7 @@ func (l *GateLinker) PackBuffer(message interface{}, encrypt bool) ([]byte, erro
 	}
 
 	data, err := l.opts.Codec.Marshal(message)
+	//log.Debugf("node返回响应序列化后消息内容为: %v", data)
 	if err != nil {
 		return nil, err
 	}

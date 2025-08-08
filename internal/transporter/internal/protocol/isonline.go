@@ -83,7 +83,6 @@ func DecodeIsOnlineRes(data []byte) (code uint16, isOnline bool, err error) {
 		err = errors.ErrInvalidMessage
 		return
 	}
-
 	reader := buffer.NewReader(data)
 
 	if _, err = reader.Seek(defaultSizeBytes+defaultHeaderBytes+defaultRouteBytes+defaultSeqBytes, io.SeekStart); err != nil {

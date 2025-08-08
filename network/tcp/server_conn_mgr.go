@@ -2,19 +2,32 @@ package tcp
 
 import (
 	"gatesvr/errors"
+	"gatesvr/filter"
+	"gatesvr/log"
 	"gatesvr/utils/xcall"
+	"gatesvr/utils/xtime"
 	"net"
 	"reflect"
 	"sync"
 	"sync/atomic"
 )
 
+type pendingMsg struct {
+	msg []byte
+}
+
+type uidTimestamp struct {
+	timestamp int64
+	messages  []pendingMsg
+}
+
 type serverConnMgr struct {
-	id         int64        // 连接ID
-	total      int64        // 总连接数
-	server     *server      // 服务器
-	pool       sync.Pool    // 连接池
-	partitions []*partition // 连接管理
+	id              int64        // 连接ID
+	total           int64        // 总连接数
+	server          *server      // 服务器
+	pool            sync.Pool    // 连接池
+	partitions      []*partition // 连接管理
+	pendingMessages sync.Map     // map[int64][]pendingMsg
 }
 
 func newServerConnMgr(server *server) *serverConnMgr {
@@ -22,6 +35,7 @@ func newServerConnMgr(server *server) *serverConnMgr {
 	cm.server = server
 	cm.pool = sync.Pool{New: func() interface{} { return &serverConn{} }}
 	cm.partitions = make([]*partition, 100)
+	cm.pendingMessages = sync.Map{}
 
 	for i := 0; i < len(cm.partitions); i++ {
 		cm.partitions[i] = &partition{connections: make(map[net.Conn]*serverConn)}
@@ -50,11 +64,22 @@ func (cm *serverConnMgr) close() {
 
 // 分配连接
 func (cm *serverConnMgr) allocate(c net.Conn) error {
+	if isBlack := filter.BlackListCheck(c.RemoteAddr()); isBlack {
+		log.Errorf("black list check failed, ip = %v", c.RemoteAddr())
+		c.Close()
+		return errors.ErrBlackUser
+	}
 	if atomic.LoadInt64(&cm.total) >= int64(cm.server.opts.maxConnNum) {
 		return errors.ErrTooManyConnection
 	}
-
+	if isWrite := filter.WriteListCheck(c.RemoteAddr()); !isWrite {
+		if isOverMaxCount := filter.IpConnectCountCheck(c.RemoteAddr()); isOverMaxCount {
+			c.Close()
+			return errors.ErrTooManyConnection
+		}
+	}
 	id := atomic.AddInt64(&cm.id, 1)
+	log.Debugf("allocate conn id = %v", id)
 	conn := cm.pool.Get().(*serverConn)
 	conn.init(cm, id, c)
 	index := int(reflect.ValueOf(c).Pointer()) % len(cm.partitions)
@@ -111,4 +136,18 @@ func (p *partition) close() {
 	for _, conn := range p.connections {
 		_ = conn.Close()
 	}
+}
+
+// 清理过期的未发送消息
+func (m *serverConnMgr) clearExpiredMessages() {
+	m.pendingMessages.Range(func(key, value interface{}) bool {
+		uid := key.(int64)
+		data := value.(*uidTimestamp)
+
+		if xtime.Now().UnixNano()-data.timestamp > DISCONNECT_WAITING_TIME { // 3分钟
+			m.pendingMessages.Delete(uid)
+		}
+
+		return true
+	})
 }

@@ -124,8 +124,11 @@ func (c *Client) handleReceive(conn network.Conn, data []byte) {
 	if !ok {
 		return
 	}
+	//log.Debugf("client收到原始响应为 %v", data)
 
 	message, err := packet.UnpackMessage(data)
+	//log.Debugf("client对原始响应拆包后为 %v", message)
+
 	if err != nil {
 		log.Errorf("unpack message failed: %v", err)
 		return

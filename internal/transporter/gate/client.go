@@ -98,15 +98,14 @@ func (c *Client) Stat(ctx context.Context, kind session.Kind) (int64, error) {
 
 // IsOnline 检测是否在线
 func (c *Client) IsOnline(ctx context.Context, kind session.Kind, target int64) (bool, bool, error) {
+
 	seq := c.doGenSequence()
 
 	buf := protocol.EncodeIsOnlineReq(seq, kind, target)
-
 	res, err := c.cli.Call(ctx, seq, buf)
 	if err != nil {
 		return false, false, err
 	}
-
 	code, isOnline, err := protocol.DecodeIsOnlineRes(res)
 	if err != nil {
 		return false, false, err
@@ -135,8 +134,8 @@ func (c *Client) Multicast(ctx context.Context, kind session.Kind, targets []int
 }
 
 // Broadcast 推送广播消息
-func (c *Client) Broadcast(ctx context.Context, kind session.Kind, message buffer.Buffer) error {
-	return c.cli.Send(ctx, protocol.EncodeBroadcastReq(0, kind, message))
+func (c *Client) Broadcast(ctx context.Context, seq uint64, kind session.Kind, message buffer.Buffer) error {
+	return c.cli.Send(ctx, protocol.EncodeBroadcastReq(seq, kind, message))
 }
 
 // GetState 获取状态

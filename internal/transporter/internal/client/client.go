@@ -2,8 +2,10 @@ package client
 
 import (
 	"context"
+	"gatesvr/circuitbreaker"
 	"gatesvr/core/buffer"
 	"gatesvr/errors"
+	"gatesvr/log"
 
 	"sync"
 	"sync/atomic"
@@ -27,11 +29,12 @@ type chWrite struct {
 }
 
 type Client struct {
-	opts        *Options       // 配置
-	chWrite     chan *chWrite  // 写入队列
-	connections []*Conn        // 连接
-	wg          sync.WaitGroup // 等待组
-	closed      atomic.Bool    // 已关闭
+	opts           *Options       // 配置
+	chWrite        chan *chWrite  // 写入队列
+	connections    []*Conn        // 连接
+	wg             sync.WaitGroup // 等待组
+	closed         atomic.Bool    // 已关闭
+	circuitbreaker *circuitbreaker.CircuitBreaker
 }
 
 func NewClient(opts *Options) *Client {
@@ -39,6 +42,7 @@ func NewClient(opts *Options) *Client {
 	c.opts = opts
 	c.chWrite = make(chan *chWrite, 10240)
 	c.connections = make([]*Conn, 0, ordered+unordered)
+	c.circuitbreaker = circuitbreaker.NewCircuitBreaker(3, 0.5, 3*time.Second)
 	c.init()
 
 	return c
@@ -53,7 +57,6 @@ func (c *Client) Call(ctx context.Context, seq uint64, buf buffer.Buffer, idx ..
 	call := make(chan []byte)
 
 	conn := c.load(idx...)
-
 	if err := conn.send(&chWrite{
 		ctx:  ctx,
 		seq:  seq,
@@ -68,9 +71,11 @@ func (c *Client) Call(ctx context.Context, seq uint64, buf buffer.Buffer, idx ..
 
 	select {
 	case <-ctx.Done():
+		log.Debugf("ctx client call timeout, conn: %v, seq: %d, buf: %v", conn, seq, buf)
 		conn.cancel(seq)
 		return nil, ctx.Err()
 	case <-ctx1.Done():
+		log.Debugf("ctx1 client call timeout, conn: %v, seq: %d, buf: %v", conn, seq, buf)
 		conn.cancel(seq)
 		return nil, ctx1.Err()
 	case data := <-call:
@@ -85,11 +90,20 @@ func (c *Client) Send(ctx context.Context, buf buffer.Buffer, idx ...int64) erro
 	}
 
 	conn := c.load(idx...)
-
-	return conn.send(&chWrite{
-		ctx: ctx,
-		buf: buf,
-	})
+	if !c.circuitbreaker.AllowRequest() {
+		return errors.ErrServerCircuitBreaker
+	}
+	if err := conn.send(&chWrite{
+		ctx:  ctx,
+		buf:  buf,
+		call: nil,
+	}); err != nil {
+		c.circuitbreaker.RecordFail()
+		return err
+	} else {
+		c.circuitbreaker.RecordSuccess()
+	}
+	return nil
 }
 
 // 获取连接

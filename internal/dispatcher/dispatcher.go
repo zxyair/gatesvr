@@ -1,10 +1,12 @@
 package dispatcher
 
 import (
+	"fmt"
 	"gatesvr/core/endpoint"
 	"gatesvr/errors"
 	"gatesvr/log"
 	"gatesvr/registry"
+	"strings"
 	"sync"
 )
 
@@ -133,4 +135,30 @@ func (d *Dispatcher) ReplaceServices(services ...*registry.ServiceInstance) {
 		}
 	}
 	d.rw.Unlock()
+}
+
+// String 输出Dispatcher的具体内容
+func (d *Dispatcher) String() string {
+	d.rw.RLock()
+	defer d.rw.RUnlock()
+
+	var buf strings.Builder
+	buf.WriteString(fmt.Sprintf("Strategy: %v\n", d.strategy))
+	buf.WriteString("Routes:\n")
+	for id, route := range d.routes {
+		buf.WriteString(fmt.Sprintf("  ID: %d, Route: %s\n", id, route.String()))
+	}
+	buf.WriteString("Events:\n")
+	for id, event := range d.events {
+		buf.WriteString(fmt.Sprintf("  ID: %d, Event: %v\n", id, event))
+	}
+	buf.WriteString("Endpoints:\n")
+	for id, ep := range d.endpoints {
+		buf.WriteString(fmt.Sprintf("  ID: %s, Endpoint: %v\n", id, ep))
+	}
+	buf.WriteString("Instances:\n")
+	for id, instance := range d.instances {
+		buf.WriteString(fmt.Sprintf("  ID: %s, Instance: %v\n", id, instance))
+	}
+	return buf.String()
 }

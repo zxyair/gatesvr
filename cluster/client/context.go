@@ -52,10 +52,27 @@ func (c *Context) Parse(v interface{}) (err error) {
 
 	if c.conn.client.opts.encryptor != nil {
 		buffer, err = c.conn.client.opts.encryptor.Decrypt(buffer)
+		//log.Debugf("client收到响应解密后的消息为：%v", buffer)
 		if err != nil {
 			return
 		}
 	}
+	if c.conn.client.opts.compressor != nil {
+		buffer, err = c.conn.client.opts.compressor.Decompress(buffer)
+		//log.Debugf("client收到响应解压缩后的消息为：%v", buffer)
+		if err != nil {
+			return
+		}
+	}
+
+	////解压缩
+	//compressor := &lz4.LZ4Compressor{}
+	//decompressedBuffer, err := compressor.Decompress(buffer)
+	//if err != nil {
+	//	return
+	//}
+	//log.Debugf("client收到响应解压缩后的消息为：%v", decompressedBuffer)
+	//buffer = decompressedBuffer
 
 	return c.conn.client.opts.codec.Unmarshal(buffer, v)
 }

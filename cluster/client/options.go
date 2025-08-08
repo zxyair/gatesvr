@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"gatesvr/compress"
 	"gatesvr/crypto"
 	"gatesvr/encoding"
 	"gatesvr/etc"
@@ -27,13 +28,14 @@ const (
 type Option func(o *options)
 
 type options struct {
-	id        string           // 实例ID
-	name      string           // 实例名称
-	ctx       context.Context  // 上下文
-	codec     encoding.Codec   // 编解码器
-	client    network.Client   // 网络客户端
-	timeout   time.Duration    // RPC调用超时时间
-	encryptor crypto.Encryptor // 消息加密器
+	id         string              // 实例ID
+	name       string              // 实例名称
+	ctx        context.Context     // 上下文
+	codec      encoding.Codec      // 编解码器
+	client     network.Client      // 网络客户端
+	timeout    time.Duration       // RPC调用超时时间
+	encryptor  crypto.Encryptor    // 消息加密器
+	compressor compress.Compressor // 消息压缩器
 }
 
 func defaultOptions() *options {
@@ -98,6 +100,9 @@ func WithTimeout(timeout time.Duration) Option {
 // WithEncryptor 设置消息加密器
 func WithEncryptor(encryptor crypto.Encryptor) Option {
 	return func(o *options) { o.encryptor = encryptor }
+}
+func WithCompressor(compressor compress.Compressor) Option {
+	return func(o *options) { o.compressor = compressor }
 }
 
 type DialOption func(o *dialOptions)

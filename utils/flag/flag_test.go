@@ -1,7 +1,7 @@
 package flag_test
 
 import (
-	"gatesvr/flag"
+	"gatesvr/utils/flag"
 	"testing"
 )
 

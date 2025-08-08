@@ -27,6 +27,7 @@ func (c *Client) Trigger(ctx context.Context, event cluster.Event, cid, uid int6
 
 // Deliver 投递消息
 func (c *Client) Deliver(ctx context.Context, cid, uid int64, message []byte) error {
+
 	return c.cli.Send(ctx, protocol.EncodeDeliverReq(0, cid, uid, message), cid)
 }
 

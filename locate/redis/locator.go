@@ -42,7 +42,6 @@ func NewLocator(opts ...Option) *Locator {
 		opt(o)
 	}
 
-	log.Infof("redis locator: %s", o)
 	if o.Prefix == "" {
 		o.Prefix = defaultPrefix
 	}
@@ -113,7 +112,8 @@ func (l *Locator) LocateNode(ctx context.Context, uid int64, name string) (strin
 func (l *Locator) BindGate(ctx context.Context, uid int64, gid string) error {
 	key := fmt.Sprintf(userGateKey, l.opts.Prefix, uid)
 
-	if err := l.opts.client.Set(ctx, key, gid, redis.KeepTTL).Err(); err != nil {
+	if err := l.opts.client.Set(ctx, key, gid, 0).Err(); err != nil {
+		log.Errorf("bind gate failed: %v", err)
 		return err
 	}
 

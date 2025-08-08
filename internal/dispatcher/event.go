@@ -1,5 +1,7 @@
 package dispatcher
 
+import "fmt"
+
 type Event struct {
 	abstract
 	event int // 事件ID
@@ -21,4 +23,9 @@ func newEvent(dispatcher *Dispatcher, event int) *Event {
 // Event 获取事件
 func (e *Event) Event() int {
 	return e.event
+}
+
+// String 输出Event的具体内容
+func (e *Event) String() string {
+	return fmt.Sprintf("ID: %d", e.event)
 }

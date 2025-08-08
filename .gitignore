@@ -1,1 +1,6 @@
 *.log
+network/tcp/log/
+functiontest/send-and-receive-message-compress-encrypto/gatestart/log/
+functiontest/send-and-receive-message-compress-encrypto/clientstart/log/
+functiontest/send-and-receive-message-compress-encrypto/gamenode/log/
+functiontest/send-and-receive-message-compress-encrypto/nodestart/log

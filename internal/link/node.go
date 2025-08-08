@@ -67,7 +67,7 @@ func (l *NodeLinker) Has(nid string) bool {
 	_, err := l.dispatcher.FindEndpoint(nid)
 	return err == nil
 }
- 
+
 // Locate 定位用户所在节点
 func (l *NodeLinker) Locate(ctx context.Context, uid int64, name string) (string, error) {
 	if l.opts.Locator == nil {
@@ -269,6 +269,7 @@ func (l *NodeLinker) doRPC(ctx context.Context, routeID int32, uid int64, fn fun
 		}
 
 		ep, err = route.FindEndpoint(nid)
+
 		if err != nil {
 			return nil, err
 		}

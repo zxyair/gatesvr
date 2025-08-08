@@ -1,7 +1,7 @@
 package crypto
 
 import (
-	"github.com/dobyte/due/v2/log"
+	"gatesvr/log"
 )
 
 type Encryptor interface {

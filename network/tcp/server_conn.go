@@ -14,6 +14,10 @@ import (
 	"time"
 )
 
+const (
+	DISCONNECT_WAITING_TIME = 3 * 60 * 1e9 // 3 minutes
+)
+
 type serverConn struct {
 	id                int64          // 连接ID
 	uid               int64          // 用户ID
@@ -25,6 +29,7 @@ type serverConn struct {
 	done              chan struct{}  // 写入完成信号
 	close             chan struct{}  // 关闭信号
 	lastHeartbeatTime int64          // 上次心跳时间
+	//pendingMessages   []pendingMsg   // 未发送的消息队列
 }
 
 var _ network.Conn = &serverConn{}
@@ -172,7 +177,11 @@ func (c *serverConn) init(cm *serverConnMgr, id int64, conn net.Conn) {
 	c.lastHeartbeatTime = xtime.Now().UnixNano()
 	atomic.StoreInt64(&c.uid, 0)
 	atomic.StoreInt32(&c.state, int32(network.ConnOpened))
-
+	//if err := c.checkAndSendPendingMessages(); err != nil {
+	//	log.Error("init connection failed, error: %s", err.Error())
+	//	c.Close()
+	//	return
+	//}
 	xcall.Go(c.read)
 
 	xcall.Go(c.write)
@@ -229,6 +238,11 @@ func (c *serverConn) forceClose(isNeedRecycle bool) error {
 
 	c.rw.Lock()
 	close(c.chWrite)
+	//var pending []chWrite
+	//for msg := range c.chWrite {
+	//	pending = append(pending, msg)
+	//}
+	//c.savePendingMessages(pending)
 	close(c.close)
 	close(c.done)
 	conn := c.conn
@@ -247,6 +261,42 @@ func (c *serverConn) forceClose(isNeedRecycle bool) error {
 
 	return err
 }
+
+//func (c *serverConn) forceClose(isNeedRecycle bool) error {
+//	if !atomic.CompareAndSwapInt32(&c.state, int32(network.ConnOpened), int32(network.ConnHanged)) {
+//		return errors.ErrConnectionNotOpened
+//	}
+//
+//	c.rw.RLock()
+//	c.chWrite <- chWrite{typ: closeSig}
+//	c.rw.RUnlock()
+//
+//	<-c.done
+//
+//	if !atomic.CompareAndSwapInt32(&c.state, int32(network.ConnHanged), int32(network.ConnClosed)) {
+//		return errors.ErrConnectionNotHanged
+//	}
+//
+//	c.rw.Lock()
+//	close(c.chWrite)
+//	close(c.close)
+//	close(c.done)
+//	conn := c.conn
+//	c.conn = nil
+//	c.rw.Unlock()
+//
+//	err := conn.Close()
+//
+//	if isNeedRecycle {
+//		c.connMgr.recycle(conn)
+//	}
+//
+//	if c.connMgr.server.disconnectHandler != nil {
+//		c.connMgr.server.disconnectHandler(c)
+//	}
+//
+//	return err
+//}
 
 // 读取消息
 func (c *serverConn) read() {
@@ -340,14 +390,16 @@ func (c *serverConn) write() {
 			if c.isClosed() {
 				return
 			}
-
+			//time.Sleep(200 * time.Millisecond)
 			if _, err := conn.Write(r.msg); err != nil {
+				log.Debugf("发送失败的消息: %v", r.msg)
 				log.Errorf("write data message error: %v", err)
 			}
+			log.Debugf("conn.Write发送消息: %v", r.msg)
 		case <-ticker.C:
 			deadline := xtime.Now().Add(-2 * c.connMgr.server.opts.heartbeatInterval).UnixNano()
 			if atomic.LoadInt64(&c.lastHeartbeatTime) < deadline {
-				log.Debugf("connection heartbeat timeout, cid: %d", c.id)
+				log.Debugf("connection heartbeat timeout, cid: %d,uid :&=%d", c.id, c.uid)
 				_ = c.forceClose(true)
 				return
 			} else {
@@ -373,4 +425,82 @@ func (c *serverConn) write() {
 // 是否已关闭
 func (c *serverConn) isClosed() bool {
 	return network.ConnState(atomic.LoadInt32(&c.state)) == network.ConnClosed
+}
+
+// 检查并发送待传输消息
+func (c *serverConn) CheckAndSendPendingMessages() error {
+	uid := atomic.LoadInt64(&c.uid)
+	if uid == 0 {
+		return nil
+	}
+
+	// 从全局pendingMessages中获取该uid的消息
+	value, ok := c.connMgr.pendingMessages.Load(uid)
+	if !ok {
+		return nil
+	}
+
+	data := value.(*uidTimestamp)
+	c.rw.Lock()
+	defer c.rw.Unlock()
+
+	// 检查连接状态
+	if err := c.checkState(); err != nil {
+		return err
+	}
+
+	// 将消息写入chWrite
+	for _, msg := range data.messages {
+		select {
+		case c.chWrite <- chWrite{typ: dataPacket, msg: msg.msg}:
+		case <-time.After(100 * time.Millisecond):
+			return errors.New("write pending messages timeout")
+		}
+	}
+
+	// 清理已发送的消息
+	c.connMgr.pendingMessages.Delete(uid)
+	return nil
+}
+
+// 保存未发送的消息
+//
+//	func (c *serverConn) savePendingMessages() {
+//		c.rw.RLock()
+//		defer c.rw.RUnlock()
+//
+//		uid := atomic.LoadInt64(&c.uid)
+//		if uid == 0 {
+//			return
+//		}
+//
+//		var messages []pendingMsg
+//		for msg := range c.chWrite {
+//			if msg.typ == dataPacket {
+//				messages = append(messages, pendingMsg{msg: msg.msg})
+//			}
+//		}
+//
+//		if len(messages) > 0 {
+//			c.connMgr.pendingMessages.Store(uid, &uidTimestamp{
+//				timestamp: xtime.Now().UnixNano(),
+//				messages:  messages,
+//			})
+//		}
+//		value, ok := c.connMgr.pendingMessages.Load(uid) // 获取uidTimestamp
+//		if ok {
+//			value.(*uidTimestamp).messages = append(value.(*uidTimestamp).messages, messages...)
+//			log.Debugf("save pending messages: %v", value.(*uidTimestamp).messages)
+//		} else {
+//			log.Debugf("save pending fial")
+//		}
+//
+// }
+func (c *serverConn) savePendingMessages(msgs []chWrite) {
+	// 这里可以写入磁盘、数据库、内存队列等
+	for _, m := range msgs {
+		log.Debugf("save pending messages: %v", m.msg)
+		// 伪代码：写入本地队列
+		// localQueue.Push(m)
+	}
 }

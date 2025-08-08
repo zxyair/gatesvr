@@ -4,14 +4,14 @@ import (
 	"context"
 	"gatesvr/component"
 	"gatesvr/config"
+	"gatesvr/core/info"
 	"gatesvr/etc"
 	"gatesvr/log"
+	"gatesvr/utils/eventbus"
+	"gatesvr/utils/lock"
+	"gatesvr/utils/task"
 	"gatesvr/utils/xcall"
 	"gatesvr/utils/xfile"
-	"github.com/dobyte/due/v2/core/info"
-	"github.com/dobyte/due/v2/eventbus"
-	"github.com/dobyte/due/v2/lock"
-	"github.com/dobyte/due/v2/task"
 
 	"os"
 	"os/signal"
@@ -44,7 +44,7 @@ func (c *Container) Add(components ...component.Component) {
 func (c *Container) Serve() {
 	c.doSaveProcessID()
 
-	c.doPrintFrameworkInfo()
+	//c.doPrintFrameworkInfo()
 
 	c.doInitComponents()
 

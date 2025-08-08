@@ -100,9 +100,10 @@ type GetIPArgs struct {
 }
 
 type Message struct {
-	Seq   int32       // 序列号
-	Route int32       // 路由ID
-	Data  interface{} // 消息数据，接收json、proto、[]byte
+	Seq        int32       // 序列号
+	Route      int32       // 路由ID
+	IsCritical bool        // 是否关键消息
+	Data       interface{} // 消息数据，接收json、proto、[]byte
 }
 
 type PushArgs struct {

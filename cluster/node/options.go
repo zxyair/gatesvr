@@ -14,20 +14,20 @@ import (
 )
 
 const (
-	defaultName    = "nodestart"     // 默认节点名称
+	defaultName    = "node"          // 默认节点名称
 	defaultAddr    = ":0"            // 连接器监听地址
-	defaultCodec   = "proto"         // 默认编解码器名称
+	defaultCodec   = "json"          // 默认编解码器名称
 	defaultTimeout = 3 * time.Second // 默认超时时间
 	defaultWeight  = 1               // 默认权重
 )
 
 const (
-	defaultIDKey      = "etc.cluster.nodestart.id"
-	defaultNameKey    = "etc.cluster.nodestart.name"
-	defaultAddrKey    = "etc.cluster.nodestart.addr"
-	defaultCodecKey   = "etc.cluster.nodestart.codec"
-	defaultTimeoutKey = "etc.cluster.nodestart.timeout"
-	defaultWeightKey  = "etc.cluster.nodestart.weight"
+	defaultIDKey      = "etc.cluster.node.id"
+	defaultNameKey    = "etc.cluster.node.name"
+	defaultAddrKey    = "etc.cluster.node.addr"
+	defaultCodecKey   = "etc.cluster.node.codec"
+	defaultTimeoutKey = "etc.cluster.node.timeout"
+	defaultWeightKey  = "etc.cluster.node.weight"
 )
 
 // SchedulingModel 调度模型

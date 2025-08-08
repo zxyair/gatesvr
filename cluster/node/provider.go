@@ -21,6 +21,7 @@ func (p *provider) Trigger(ctx context.Context, gid string, cid, uid int64, even
 // Deliver 投递消息
 func (p *provider) Deliver(ctx context.Context, gid, nid string, cid, uid int64, message []byte) error {
 	msg, err := packet.UnpackMessage(message)
+	//log.Debugf("node拆包后数据: %v", msg)
 	if err != nil {
 		return err
 	}

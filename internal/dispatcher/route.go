@@ -1,5 +1,7 @@
 package dispatcher
 
+import "fmt"
+
 type Route struct {
 	abstract
 	id       int32  // 路由ID
@@ -42,4 +44,9 @@ func (r *Route) Stateful() bool {
 // Internal 是否内部路由
 func (r *Route) Internal() bool {
 	return r.internal
+}
+
+// String 输出Route的具体内容
+func (r *Route) String() string {
+	return fmt.Sprintf("ID: %d, Group: %s, Stateful: %t, Internal: %t", r.ID(), r.Group(), r.Stateful(), r.Internal())
 }

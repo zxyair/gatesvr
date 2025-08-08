@@ -8,7 +8,7 @@ import (
 const (
 	defaultServerAddr               = ":3553"
 	defaultServerMaxConnNum         = 5000
-	defaultServerHeartbeatInterval  = "10s"
+	defaultServerHeartbeatInterval  = "1s"
 	defaultServerHeartbeatMechanism = "resp"
 )
 
@@ -31,7 +31,7 @@ type ServerOption func(o *serverOptions)
 type serverOptions struct {
 	addr               string             // 监听地址，默认0.0.0.0:3553
 	maxConnNum         int                // 最大连接数，默认5000
-	heartbeatInterval  time.Duration      // 心跳检测间隔时间，默认10s
+	heartbeatInterval  time.Duration      // 心跳检测间隔时间，默认1s
 	heartbeatMechanism HeartbeatMechanism // 心跳机制，默认resp
 }
 

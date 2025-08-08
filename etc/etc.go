@@ -4,8 +4,8 @@ import (
 	"gatesvr/config"
 	"gatesvr/config/file/core"
 	"gatesvr/core/value"
-	"gatesvr/env"
-	"gatesvr/flag"
+	"gatesvr/utils/env"
+	"gatesvr/utils/flag"
 )
 
 // etc主要被当做项目启动配置存在；常用于集群配置、服务组件配置等。

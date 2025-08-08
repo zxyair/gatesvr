@@ -2,7 +2,7 @@ package codes_test
 
 import (
 	"errors"
-	"gatesvr/codes"
+	"gatesvr/utils/codes"
 
 	"testing"
 )
