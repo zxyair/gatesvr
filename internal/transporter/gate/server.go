@@ -6,7 +6,6 @@ import (
 	"gatesvr/internal/transporter/internal/protocol"
 	"gatesvr/internal/transporter/internal/route"
 	"gatesvr/internal/transporter/internal/server"
-	"gatesvr/log"
 	"sync"
 )
 
@@ -157,7 +156,7 @@ func (s *Server) multicast(conn *server.Conn, data []byte) error {
 func (s *Server) broadcast(conn *server.Conn, data []byte) error {
 
 	seq, kind, message, err := protocol.DecodeBroadcastReq(data)
-	log.Debugf("广播消息：%+v,序列号%v", message, seq)
+	//log.Debugf("广播消息：%+v,序列号%v", message, seq)
 	if err != nil {
 		return err
 	}
@@ -165,7 +164,7 @@ func (s *Server) broadcast(conn *server.Conn, data []byte) error {
 		return nil
 	}
 	s.broadcastMessages.Store(seq, 1)
-	log.Debugf("map中信息：%+v", s.broadcastMessages)
+	//log.Debugf("map中信息：%+v", s.broadcastMessages)
 	if total, err := s.provider.Broadcast(context.Background(), kind, message); seq == 0 {
 		return err
 	} else {

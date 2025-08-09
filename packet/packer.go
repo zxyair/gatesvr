@@ -13,8 +13,10 @@ import (
 )
 
 const (
-	dataBit      = 0 << 7 // 数据标识
-	heartbeatBit = 1 << 7 // 心跳标识
+	dataBit       = 0 << 7 // 数据标识
+	heartbeatBit  = 1 << 7
+	criticalBit   = 1 << 7 // 关键包标识
+	uncriticalBit = 0 << 7 // 普通标识
 )
 
 type NocopyReader interface {
@@ -178,6 +180,7 @@ func (p *defaultPacker) copyReadMessage(reader io.Reader) ([]byte, error) {
 }
 
 // PackMessage 打包消息
+// size（4）+headder (1) + falg（1）+route（2）+seq（2）+buffer+magic(2)
 func (p *defaultPacker) PackMessage(message *Message) ([]byte, error) {
 	if message.Route > int32(1<<(8*p.opts.routeBytes-1)-1) || message.Route < int32(-1<<(8*p.opts.routeBytes-1)) {
 		return nil, errors.ErrRouteOverflow
@@ -194,7 +197,8 @@ func (p *defaultPacker) PackMessage(message *Message) ([]byte, error) {
 	}
 
 	var (
-		size = defaultHeaderBytes + p.opts.routeBytes + p.opts.seqBytes + len(message.Buffer)
+		//size = defaultHeaderBytes + p.opts.routeBytes + p.opts.seqBytes + len(message.Buffer)
+		size = defaultHeaderBytes + defaultFlagBytes + p.opts.routeBytes + p.opts.seqBytes + len(message.Buffer) + defaultMagicBytes // 增加2字节的magic
 		buf  = &bytes.Buffer{}
 	)
 
@@ -208,6 +212,11 @@ func (p *defaultPacker) PackMessage(message *Message) ([]byte, error) {
 	err = binary.Write(buf, p.opts.byteOrder, int8(dataBit))
 	if err != nil {
 		return nil, err
+	}
+	if message.IsCritical {
+		err = binary.Write(buf, p.opts.byteOrder, uint8(criticalBit))
+	} else {
+		err = binary.Write(buf, p.opts.byteOrder, uint8(uncriticalBit))
 	}
 
 	switch p.opts.routeBytes {
@@ -239,6 +248,12 @@ func (p *defaultPacker) PackMessage(message *Message) ([]byte, error) {
 		return nil, err
 	}
 
+	// 添加magic值
+	err = binary.Write(buf, p.opts.byteOrder, int16(0x7e))
+	if err != nil {
+		return nil, err
+	}
+
 	return buf.Bytes(), nil
 }
 
@@ -259,14 +274,21 @@ func (p *defaultPacker) PackBuffer(message *Message) (buffer.Buffer, error) {
 	}
 
 	var (
-		size = defaultHeaderBytes + p.opts.routeBytes + p.opts.seqBytes + len(message.Buffer)
+		//size = defaultHeaderBytes + p.opts.routeBytes + p.opts.seqBytes + len(message.Buffer)
+		size = defaultHeaderBytes + defaultFlagBytes + p.opts.routeBytes + p.opts.seqBytes + len(message.Buffer) + defaultMagicBytes
 		buf  = buffer.NewNocopyBuffer()
 	)
 
-	writer := buf.Malloc(defaultSizeBytes + defaultHeaderBytes + p.opts.routeBytes + p.opts.seqBytes)
+	//writer := buf.Malloc(defaultSizeBytes + defaultHeaderBytes + p.opts.routeBytes + p.opts.seqBytes)
+	writer := buf.Malloc(defaultSizeBytes + defaultHeaderBytes + defaultFlagBytes + p.opts.routeBytes + p.opts.seqBytes + defaultMagicBytes)
 	writer.WriteInt32s(p.opts.byteOrder, int32(size))
 	writer.WriteInt8s(int8(dataBit))
 
+	if message.IsCritical {
+		writer.WriteUint8s(criticalBit)
+	} else {
+		writer.WriteUint8s(uncriticalBit)
+	}
 	switch p.opts.routeBytes {
 	case 1:
 		writer.WriteInt8s(int8(message.Route))
@@ -287,16 +309,19 @@ func (p *defaultPacker) PackBuffer(message *Message) (buffer.Buffer, error) {
 
 	buf.Mount(message.Buffer)
 
+	// 添加magic值
+	buf.Mount([]byte{0x00, 0x7e})
 	return buf, nil
 }
 
 // UnpackMessage 解包消息
 func (p *defaultPacker) UnpackMessage(data []byte) (*Message, error) {
 	var (
-		ln     = defaultSizeBytes + defaultHeaderBytes + p.opts.routeBytes + p.opts.seqBytes
-		reader = bytes.NewReader(data)
-		size   uint32
-		header uint8
+		ln           = defaultSizeBytes + defaultHeaderBytes + defaultFlagBytes + p.opts.routeBytes + p.opts.seqBytes
+		reader       = bytes.NewReader(data)
+		size         uint32
+		header       uint8
+		criticalFlag uint8
 	)
 
 	if len(data)-ln < 0 {
@@ -321,7 +346,14 @@ func (p *defaultPacker) UnpackMessage(data []byte) (*Message, error) {
 		return nil, errors.ErrInvalidMessage
 	}
 
+	// 读取关键包标识
+	err = binary.Read(reader, p.opts.byteOrder, &criticalFlag)
+	if err != nil {
+		return nil, err
+	}
+
 	message := &Message{}
+	message.IsCritical = criticalFlag == criticalBit
 
 	switch p.opts.routeBytes {
 	case 1:
@@ -371,7 +403,17 @@ func (p *defaultPacker) UnpackMessage(data []byte) (*Message, error) {
 		}
 	}
 
-	message.Buffer = data[ln:]
+	// 从消息的最后2字节读取魔数
+	if len(data) < 2 {
+		return nil, errors.ErrInvalidMessage
+	}
+	magic := p.opts.byteOrder.Uint16(data[len(data)-2:])
+	if magic != 0x7e {
+		return nil, errors.ErrInvalidMessage
+	}
+
+	// 确保Buffer不包含magic值
+	message.Buffer = data[defaultSizeBytes+defaultHeaderBytes+defaultFlagBytes+p.opts.routeBytes+p.opts.seqBytes : len(data)-2]
 
 	return message, nil
 }
