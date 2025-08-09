@@ -395,7 +395,7 @@ func (c *serverConn) write() {
 				log.Debugf("发送失败的消息: %v", r.msg)
 				log.Errorf("write data message error: %v", err)
 			}
-			log.Debugf("conn.Write发送消息: %v", r.msg)
+			//log.Debugf("conn.Write发送消息: %v", r.msg)
 		case <-ticker.C:
 			deadline := xtime.Now().Add(-2 * c.connMgr.server.opts.heartbeatInterval).UnixNano()
 			if atomic.LoadInt64(&c.lastHeartbeatTime) < deadline {

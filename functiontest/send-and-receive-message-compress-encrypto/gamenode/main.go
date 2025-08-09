@@ -20,7 +20,7 @@ const (
 
 func main() {
 	// 创建容器
-	gatesvr := gatesvr.NewContainer()
+	gamesvr := gatesvr.NewContainer()
 	//encryptor := rsa.NewEncryptor(
 	//	rsa.WithEncryptorHash(hash.SHA256),
 	//	rsa.WithEncryptorPadding(rsa.OAEP),
@@ -42,9 +42,9 @@ func main() {
 	// 初始化应用
 	initApp(component.Proxy())
 	// 添加节点组件
-	gatesvr.Add(component)
+	gamesvr.Add(component)
 	// 启动容器
-	gatesvr.Serve()
+	gamesvr.Serve()
 
 }
 

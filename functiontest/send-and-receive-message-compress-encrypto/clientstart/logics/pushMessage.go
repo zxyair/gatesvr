@@ -144,6 +144,7 @@ func TestStaefulRoute(conn *client.Conn) {
 			err := conn.Push(msg)
 			if err != nil {
 				log.Errorf("push message failed: %v", err)
+				break
 			}
 		case <-timeout:
 			return
