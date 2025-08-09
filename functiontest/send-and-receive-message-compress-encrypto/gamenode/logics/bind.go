@@ -38,5 +38,10 @@ func AuthritionCheckHandler(ctx node.Context) {
 
 func BindNode(proxy *node.Proxy, uid string) {
 	uidInt64, _ := strconv.ParseInt(uid, 10, 64)
-	proxy.BindNode(context.Background(), uidInt64)
+	err := proxy.BindNode(context.Background(), uidInt64)
+	if err != nil {
+		log.Errorf("bind node failed: %v", err)
+	} else {
+		log.Debugf("bind node success")
+	}
 }

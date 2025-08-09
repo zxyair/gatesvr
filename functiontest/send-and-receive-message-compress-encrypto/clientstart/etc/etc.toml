@@ -16,7 +16,8 @@ timezone = "Local"
 
 [network.tcp.client]
     # 拨号地址
-    addr = "127.0.0.1:3353"
+    addr = "gatesvr:3353"
+    #addr = "localhost:3353"
     # 拨号超时时间，默认5s
     timeout = "5s"
     # 心跳间隔时间（秒），默认为10秒。设置为0则不启用心跳检测

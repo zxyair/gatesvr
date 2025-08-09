@@ -1,38 +1,30 @@
-FROM ubuntu:latest
-LABEL authors="xyxvzhang"
+# 构建阶段
+FROM golang:1.24-alpine AS builder
 
-ENTRYPOINT ["top", "-b"]
-
-# 使用官方Go镜像作为构建环境
-FROM golang:1.21-alpine AS builder
-
-# 设置工作目录
 WORKDIR /app
 
-# 复制依赖文件并下载依赖
+# 复制 go.mod 和 go.sum
 COPY go.mod go.sum ./
 RUN go mod download
 
-# 复制项目文件
+# 复制 gatesvr 下所有内容（假设你在 gatesvr 根目录执行 docker build）
 COPY . .
 
-# 构建可执行文件（禁用CGO，减小镜像大小）
-RUN CGO_ENABLED=0 GOOS=linux go build -o server
+# 编译 clientstart 目录下的 main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o client ./functiontest/send-and-receive-message-compress-encrypto/clientstart
 
-# 使用轻量级运行时镜像
+# 运行阶段
 FROM alpine:latest
 
-# 安装必要的运行时依赖
 RUN apk --no-cache add ca-certificates
 
-# 设置工作目录
 WORKDIR /root/
 
-# 从构建阶段复制可执行文件
-COPY --from=builder /app/server .
+# 复制可执行文件
+COPY --from=builder /app/client .
 
-# 暴露服务端口（根据实际端口修改）
-EXPOSE 3353
+# 复制配置文件（如果需要）
+COPY --from=builder /app/functiontest/send-and-receive-message-compress-encrypto/clientstart/ .
 
-# 设置容器启动命令
-CMD ["./server"]
+
+CMD ["./client"]
