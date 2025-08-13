@@ -3,7 +3,7 @@ package lz4Compressor
 import (
 	"bytes"
 	"fmt"
-	"gatesvr/compress/lz4/pb"
+	"gatesvr/compress/lz4Compressor/pb"
 	"gatesvr/encoding/json"
 	"gatesvr/encoding/proto"
 	"testing"

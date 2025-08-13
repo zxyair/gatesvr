@@ -2,9 +2,7 @@ package info
 
 import (
 	"fmt"
-	"gatesvr/mode"
 	"strings"
-	"syscall"
 	"unicode/utf8"
 )
 
@@ -24,25 +22,7 @@ const (
 	rightTopBorder    = "┐"
 	leftBottomBorder  = "└"
 	rightBottomBorder = "┘"
-	website           = "https://github.com/dobyte/due"
-	version           = "v2.2.7"
-	global            = "Global"
 )
-
-func PrintFrameworkInfo() {
-	fmt.Println(strings.TrimSuffix(strings.TrimPrefix(logo, "\n"), "\n"))
-	PrintBoxInfo("",
-		fmt.Sprintf("[Website] %s", website),
-		fmt.Sprintf("[Version] %s", version),
-	)
-}
-
-func PrintGlobalInfo() {
-	PrintBoxInfo(global,
-		fmt.Sprintf("PID: %d", syscall.Getpid()),
-		fmt.Sprintf("Mode: %s", mode.GetMode()),
-	)
-}
 
 func PrintBoxInfo(name string, infos ...string) {
 	fmt.Println(buildTopBorder(name))

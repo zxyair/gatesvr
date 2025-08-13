@@ -75,7 +75,7 @@ func (p *proxy) deliver(ctx context.Context, cid, uid int64, message []byte) {
 		log.Errorf("unpack message failed: %v", err)
 		return
 	}
-	if !msg.IsCritical {
+	if !msg.IsCritical && p.gate.opts.limiter != nil {
 		if !p.gate.opts.limiter.GetToken() {
 			//log.Errorf("token is not enough")
 			log.Debugf("token is not enough")
@@ -129,6 +129,13 @@ func (p *proxy) deliver(ctx context.Context, cid, uid int64, message []byte) {
 		case errors.Is(err, errors.ErrNotFoundRoute), errors.Is(err, errors.ErrNotFoundEndpoint):
 			message := &packet.Notification{
 				Code:    codes.NotFound.Code(),
+				Message: fmt.Sprintf("deliver message failed, cid: %d uid: %d seq: %d route: %d err: %v", cid, uid, msg.Seq, msg.Route, err),
+			}
+			p.processMessageToClient(cid, message)
+			log.Warnf("deliver message failed, cid: %d uid: %d seq: %d route: %d err: %v", cid, uid, msg.Seq, msg.Route, err)
+		case errors.Is(err, errors.ErrNotFoundUserLocation):
+			message := &packet.Notification{
+				Code:    codes.StateError.Code(),
 				Message: fmt.Sprintf("deliver message failed, cid: %d uid: %d seq: %d route: %d err: %v", cid, uid, msg.Seq, msg.Route, err),
 			}
 			p.processMessageToClient(cid, message)

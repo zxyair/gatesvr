@@ -149,7 +149,7 @@ func (g *Gate) handleConnect(conn network.Conn) {
 // 处理断开连接
 func (g *Gate) handleDisconnect(conn network.Conn) {
 	g.session.RemConn(conn)
-	log.Debugf("gate disconnect: %v, cid = %v, uid = %v", conn, conn.ID(), conn.UID())
+	//log.Debugf("gate disconnect: %v, cid = %v, uid = %v", conn, conn.ID(), conn.UID())
 
 	if cid, uid := conn.ID(), conn.UID(); uid != 0 {
 		ctx, cancel := context.WithTimeout(g.ctx, g.opts.timeout)
@@ -255,13 +255,16 @@ func (g *Gate) printInfo() {
 	infos = append(infos, fmt.Sprintf("Name: %s", g.Name()))
 	infos = append(infos, fmt.Sprintf("Link: %s", g.linker.ExposeAddr()))
 	infos = append(infos, fmt.Sprintf("Server: [%s] %s", g.opts.server.Protocol(), net.FulfillAddr(g.opts.server.Addr())))
-	infos = append(infos, fmt.Sprintf("Locator: %s", g.opts.locator.Name()))
 	infos = append(infos, fmt.Sprintf("Registry: %s", g.opts.registry.Name()))
 	if g.opts.encryptor != nil {
 		infos = append(infos, fmt.Sprintf("Encryptor: %s", g.opts.encryptor.Name()))
 	} else {
 		infos = append(infos, "Encryptor: -")
 	}
-
+	if g.opts.compressor != nil {
+		infos = append(infos, fmt.Sprintf("Compressor: %s", g.opts.compressor.Name()))
+	} else {
+		infos = append(infos, "Compressor: -")
+	}
 	info.PrintBoxInfo("Gate", infos...)
 }

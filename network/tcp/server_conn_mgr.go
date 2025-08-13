@@ -79,7 +79,6 @@ func (cm *serverConnMgr) allocate(c net.Conn) error {
 		}
 	}
 	id := atomic.AddInt64(&cm.id, 1)
-	log.Debugf("allocate conn id = %v", id)
 	conn := cm.pool.Get().(*serverConn)
 	conn.init(cm, id, c)
 	index := int(reflect.ValueOf(c).Pointer()) % len(cm.partitions)

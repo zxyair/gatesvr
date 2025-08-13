@@ -29,5 +29,7 @@ func Broadcast(proxy *node.Proxy, seq string, message string) {
 	if err != nil {
 		log.Errorf("broadcast failed: %v", err)
 		return
+	} else {
+		log.Infof("成功推送广播消息给网关")
 	}
 }

@@ -90,7 +90,6 @@ func (c *Client) Stat(ctx context.Context, kind session.Kind) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-
 	_, total, err := protocol.DecodeStatRes(res)
 
 	return int64(total), err

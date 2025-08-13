@@ -16,7 +16,9 @@ timezone = "Local"
 
 [network.tcp.client]
     # 拨号地址
-    addr = "127.0.0.1:3353"
+    #addr = "gatesvr:3353"
+    addr = "localhost:3353"
+    #addr= "9.134.64.81:31353"
     # 拨号超时时间，默认5s
     timeout = "5s"
     # 心跳间隔时间（秒），默认为10秒。设置为0则不启用心跳检测
@@ -64,13 +66,13 @@ timezone = "Local"
     # 路由字节数，默认为2字节
     routeBytes = 2
     # 序列号字节数，默认为2字节
-    seqBytes = 2
+    seqBytes = 4
     # 消息字节数，默认为5000字节
     bufferBytes = 100000
 
 [log]
     # 日志输出文件
-    file = "./log/due.log"
+    file = "./log/client.log"
     # 日志输出级别，可选：debug | info | warn | error | fatal | panic
     level = "debug"
     # 日志输出格式，可选：text | json

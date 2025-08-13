@@ -12,17 +12,19 @@ import (
 )
 
 // 推送消息
-func PushMessage(conn *client.Conn) {
+func PushMessage(conn *client.Conn, message string) {
 	msg := &cluster.Message{
 		Route:      route.Greet,
 		IsCritical: true,
 		Data: &pojo.GreetReq{
-			Message: fmt.Sprintf("hello"),
+			Message: message,
 		}}
 	log.Debugf("client推送消原始消息为: Route: %d, Data: %+v", msg.Route, msg.Data)
 	err := conn.Push(msg)
 	if err != nil {
 		log.Errorf("push message failed: %v", err)
+	} else {
+		log.Debugf("成功发送给网关")
 	}
 }
 

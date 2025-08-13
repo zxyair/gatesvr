@@ -29,8 +29,8 @@ func TestBenchMark(proxy *client.Proxy) {
 		size int // 数据包大小
 	}{
 		{
-			c:    50,
-			n:    1000000,
+			c:    5,
+			n:    100,
 			size: 1024,
 		},
 		{
@@ -82,7 +82,6 @@ func doPressureTest(proxy *client.Proxy, c, n, size int) {
 	atomic.StoreInt64(&totalRecv, 0)
 
 	wg.Add(n)
-
 	chSeq := make(chan int32, n)
 
 	// 创建连接
@@ -106,12 +105,13 @@ func doPressureTest(proxy *client.Proxy, c, n, size int) {
 					}
 
 					err := conn.Push(&cluster.Message{
-						Route: route.Greet,
+						Route: route.PressureTest,
 						Seq:   seq,
 						Data:  &pojo.GreetReq{Message: message},
 					})
 					if err != nil {
-						log.Errorf("push message failed: %v", err)
+						//log.Errorf("push message failed: %v", err)
+						log.Errorf("push message failed (seq=%d): %v", seq, err)
 						return
 					}
 
@@ -162,4 +162,18 @@ func convBytes(bytes int) string {
 	default:
 		return fmt.Sprintf("%.2fTB", float64(bytes)/TB)
 	}
+}
+
+// 消息回复处理器
+func PressurTestHandler(ctx *client.Context) {
+	res := &pojo.GreetRes{}
+
+	if err := ctx.Parse(res); err != nil {
+		log.Errorf("invalid response message, err: %v", err)
+		return
+	}
+
+	atomic.AddInt64(&totalRecv, 1)
+
+	wg.Done()
 }

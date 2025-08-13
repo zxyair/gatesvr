@@ -20,6 +20,7 @@ var (
 	IllegalRequest     = NewCode(9, "illegal request")
 	TooManyRequests    = NewCode(10, "too many requests")
 	TooManyConnections = NewCode(11, "too many connections")
+	StateError         = NewCode(12, "state error")
 )
 
 type Code struct {

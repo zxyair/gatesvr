@@ -11,9 +11,18 @@ import (
 	"gatesvr/packet"
 	"gatesvr/utils/codes"
 	"strconv"
+	"sync"
 	"sync/atomic"
 	"time"
 )
+
+var reqPool = sync.Pool{New: func() any {
+	return &pojo.GreetReq{}
+}}
+
+var resPool = sync.Pool{New: func() any {
+	return &pojo.GreetRes{}
+}}
 
 func GreetHandler(ctx node.Context) {
 	req := &pojo.GreetReq{}
@@ -48,6 +57,25 @@ func GreetHandler(ctx node.Context) {
 	//log.Debugf("node返回原始响应为: %+v", res)
 	//res.Message = fmt.Sprintf("I'm tcp server, and the current time is: %s", xtime.Now().Format(xtime.DateTime))
 }
+
+func PressureTestHandler(ctx node.Context) {
+	req := reqPool.Get().(*pojo.GreetReq)
+	res := resPool.Get().(*pojo.GreetRes)
+	defer reqPool.Put(req)
+	defer resPool.Put(res)
+	defer func() {
+		if err := ctx.Response(res); err != nil {
+			log.Errorf("response message failed: %v", err)
+		}
+	}()
+
+	if err := ctx.Parse(req); err != nil {
+		log.Errorf("parse request message failed: %v", err)
+		return
+	}
+	res.Message = req.Message
+}
+
 func NodeContinuePush(proxy *node.Proxy, uid string, message string) {
 
 	ticker := time.NewTicker(time.Millisecond) // 每秒 1000 次
@@ -126,6 +154,8 @@ func Push(proxy *node.Proxy, uid string, message string) {
 	if err != nil {
 		log.Errorf("push failed: %v", err)
 		return
+	} else {
+		log.Infof("成功推送消息给网关")
 	}
 
 }

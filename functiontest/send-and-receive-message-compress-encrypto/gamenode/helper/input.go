@@ -37,29 +37,11 @@ func HandleConsoleInput(proxy *node.Proxy) {
 		case "bindNode":
 			{
 				if len(parts) < 2 {
-					fmt.Println("请输入待绑定用户id，例如: bindNode 1")
+					fmt.Println("请输入待绑定用户id，例如: bindNode 123")
 					continue
 				}
 				logics.BindNode(proxy, parts[1])
 			}
-		case "IsOnline":
-			{
-				if len(parts) < 2 {
-					fmt.Println("请输入待查询用户id，例如: isOnline 1")
-					continue
-				}
-				logics.IsOnline(proxy, parts[1])
-			}
-		case "ReconnectDemo":
-			{
-				if len(parts) < 3 {
-					fmt.Println("请输入推送内容，例如: ReconnectDemo 111 请准备")
-					continue
-				}
-				logics.ReconnectDemo(proxy, parts[1], parts[2])
-			}
-		case "exit":
-			return
 		case "isOnline":
 			{
 				if len(parts) < 2 {
@@ -69,7 +51,7 @@ func HandleConsoleInput(proxy *node.Proxy) {
 				online, err := logics.IsOnline(proxy, parts[1])
 				if err != nil {
 					log.Debugf("uid %d Not Online Or Not Exist", parts[1])
-					return
+					continue
 				}
 				if online {
 					fmt.Println("用户在线")
@@ -78,6 +60,31 @@ func HandleConsoleInput(proxy *node.Proxy) {
 				}
 
 			}
+		case "onlineUserCount":
+			{
+				count, err := logics.OnlineUserCount(proxy)
+				if err != nil {
+					log.Debugf("get online user count failed, err:%v", err)
+					return
+				} else {
+					log.Debugf("在线用户数:", count)
+				}
+			}
+		case "reconnectDemo":
+			{
+				if len(parts) < 3 {
+					fmt.Println("请输入推送内容，例如: ReconnectDemo 111 请准备")
+					continue
+				}
+				logics.ReconnectDemo(proxy, parts[1], parts[2])
+			}
+		case "help":
+			{
+				printhelper()
+			}
+		case "exit":
+			return
+
 		default:
 			fmt.Println("无效命令，请重新输入")
 		}
@@ -85,7 +92,18 @@ func HandleConsoleInput(proxy *node.Proxy) {
 }
 
 func printhelper() {
-	fmt.Println("欢迎使用客户端功能测试工具——首次运行请先执行 dial 命令连接网关服务器, 之后输入auth <uid> 进行鉴权")
-	fmt.Println("请输入命令，例如: dial")
-	fmt.Println("功能测试命令列表:")
+	fmt.Println("==================================================")
+	fmt.Println("欢迎使用节点控制台测试工具")
+	fmt.Println("请输入命令，例如: broadcast 123 活动开始")
+	fmt.Println("==================================================")
+	fmt.Println("\n[功能命令列表]")
+	fmt.Println("  broadcast <seq> <message>: 广播消息（例如: broadcast 324 活动开始）")
+	fmt.Println("  push <uid> <message>: 推送消息给指定用户（例如: push 123 请准备）")
+	fmt.Println("  bindNode <uid>: 绑定用户到当前节点（例如: bindNode 123）")
+	fmt.Println("  isOnline <uid>: 查询用户是否在线（例如: isOnline 1）")
+	fmt.Println("  onlineUserCount: 查询当前在线用户数")
+	fmt.Println("  reconnectDemo <uid> <message>: 重连演示（例如: reconnectDemo 111 请准备）")
+	fmt.Println("  help: 显示帮助信息")
+	fmt.Println("  exit: 退出程序")
+	fmt.Println("==================================================")
 }

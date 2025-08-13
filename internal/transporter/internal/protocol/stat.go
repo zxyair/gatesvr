@@ -87,16 +87,18 @@ func DecodeStatRes(data []byte) (code uint16, total uint64, err error) {
 		err = errors.ErrInvalidMessage
 		return
 	}
-
 	reader := buffer.NewReader(data)
-
+	// 跳过 size+header+route+seq
 	if _, err = reader.Seek(defaultSizeBytes+defaultHeaderBytes+defaultRouteBytes+defaultSeqBytes, io.SeekStart); err != nil {
 		return
 	}
-
-	if len(data) == statResBytes {
-		total, err = reader.ReadUint64(binary.BigEndian)
+	if code, err = reader.ReadUint16(binary.BigEndian); err != nil {
+		return
 	}
-
+	if len(data) == statResBytes {
+		if total, err = reader.ReadUint64(binary.BigEndian); err != nil {
+			return
+		}
+	}
 	return
 }

@@ -157,7 +157,8 @@ func (l *NodeLinker) Deliver(ctx context.Context, args *DeliverArgs) error {
 		_, err := l.doRPC(ctx, args.Route, args.UID, func(ctx context.Context, client *node.Client) (bool, interface{}, error) {
 			return false, nil, client.Deliver(ctx, args.CID, args.UID, message)
 		})
-		if err != nil && !errors.Is(err, errors.ErrNotFoundUserLocation) {
+		if err != nil {
+			log.Errorf("deliver message to node failed, err: %s", err.Error())
 			return err
 		}
 
@@ -260,6 +261,7 @@ func (l *NodeLinker) doRPC(ctx context.Context, routeID int32, uid int64, fn fun
 	for i := 0; i < 2; i++ {
 		if route.Stateful() {
 			if nid, err = l.Locate(ctx, uid, route.Group()); err != nil {
+				log.Errorf("loacte error: %s", err)
 				return nil, err
 			}
 			if nid == prev {
@@ -269,8 +271,10 @@ func (l *NodeLinker) doRPC(ctx context.Context, routeID int32, uid int64, fn fun
 		}
 
 		ep, err = route.FindEndpoint(nid)
+		//log.Debugf("endpoint: %s", ep)
 
 		if err != nil {
+			log.Errorf("find endpoint error: %s", err)
 			return nil, err
 		}
 

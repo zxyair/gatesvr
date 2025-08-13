@@ -32,6 +32,8 @@ func Push(proxy *node.Proxy, uid string, message string) {
 	if err != nil {
 		log.Errorf("push failed: %v", err)
 		return
+	} else {
+		log.Infof("成功推送消息给网关")
 	}
 
 }

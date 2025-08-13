@@ -2,7 +2,6 @@ package session
 
 import (
 	"gatesvr/errors"
-	"gatesvr/log"
 	"gatesvr/network"
 	"net"
 	"sync"
@@ -129,7 +128,7 @@ func (s *Session) Bind(cid, uid int64) error {
 	}
 
 	conn.Bind(uid)
-	log.Debugf("conn绑定后详情%+v", conn)
+	//log.Debugf("conn绑定后详情%+v", conn)
 	s.users[uid] = conn
 	return nil
 }

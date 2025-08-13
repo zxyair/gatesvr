@@ -153,7 +153,5 @@ func TestRegistry_Watch(t *testing.T) {
 		}
 	}()
 
-	//time.Sleep(60 * time.Second)
-
 	select {}
 }
