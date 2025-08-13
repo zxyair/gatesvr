@@ -4,10 +4,8 @@ import (
 	"gatesvr"
 	"gatesvr/cluster"
 	"gatesvr/cluster/client"
-	"gatesvr/compress/lz4Compressor"
-	"gatesvr/core/hash"
-	"gatesvr/crypto/rsa"
 	"gatesvr/encoding/json"
+	"gatesvr/functiontest/send-and-receive-message-compress-encrypto/clientstart/benchtest"
 	"gatesvr/functiontest/send-and-receive-message-compress-encrypto/clientstart/helper"
 	"gatesvr/functiontest/send-and-receive-message-compress-encrypto/clientstart/pojo"
 	"gatesvr/functiontest/send-and-receive-message-compress-encrypto/route"
@@ -26,19 +24,19 @@ const (
 func main() {
 	// 创建容器
 	container := gatesvr.NewContainer()
-	encryptor := rsa.NewEncryptor(
-		rsa.WithEncryptorHash(hash.SHA256),
-		rsa.WithEncryptorPadding(rsa.OAEP),
-		rsa.WithEncryptorPublicKey(publicKey),
-		rsa.WithEncryptorPrivateKey(privateKey),
-	)
-	compressor := lz4Compressor.NewCompressor()
+	//encryptor := rsa.NewEncryptor(
+	//	rsa.WithEncryptorHash(hash.SHA256),
+	//	rsa.WithEncryptorPadding(rsa.OAEP),
+	//	rsa.WithEncryptorPublicKey(publicKey),
+	//	rsa.WithEncryptorPrivateKey(privateKey),
+	//)
+	//compressor := lz4Compressor.NewCompressor()
 	// 创建客户端组件
 	component := client.NewClient(
 		client.WithClient(tcp.NewClient()),
 		client.WithCodec(json.DefaultCodec),
-		client.WithEncryptor(encryptor),
-		client.WithCompressor(compressor),
+		//client.WithEncryptor(encryptor),
+		//client.WithCompressor(compressor),
 	)
 	// 初始化监听
 	initListen(component.Proxy())
@@ -60,12 +58,12 @@ func initListen(proxy *client.Proxy) {
 	proxy.AddRouteHandler(route.Greet, greetHandler)
 	proxy.AddRouteHandler(route.AuthritionCheck, authuritionHandler)
 	proxy.AddRouteHandler(route.ReceiveNotifications, receiveNotificationsHandler)
+	proxy.AddRouteHandler(route.PressureTest, benchtest.PressurTestHandler)
 }
 
 // 组件启动处理器
 func startHandler(proxy *client.Proxy) {
 	go helper.HandleConsoleInput(proxy)
-
 }
 
 // 连接建立处理器

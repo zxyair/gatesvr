@@ -274,11 +274,15 @@ func (c *Client) printInfo() {
 	infos = append(infos, fmt.Sprintf("Name: %s", c.Name()))
 	infos = append(infos, fmt.Sprintf("Codec: %s", c.opts.codec.Name()))
 	infos = append(infos, fmt.Sprintf("Protocol: %s", c.opts.client.Protocol()))
-
 	if c.opts.encryptor != nil {
 		infos = append(infos, fmt.Sprintf("Encryptor: %s", c.opts.encryptor.Name()))
 	} else {
 		infos = append(infos, "Encryptor: -")
+	}
+	if c.opts.compressor != nil {
+		infos = append(infos, fmt.Sprintf("Compressor: %s", c.opts.compressor.Name()))
+	} else {
+		infos = append(infos, "Compressor: -")
 	}
 
 	info.PrintBoxInfo("Client", infos...)

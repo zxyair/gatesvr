@@ -4,7 +4,6 @@ import (
 	"context"
 	"gatesvr/component"
 	"gatesvr/config"
-	"gatesvr/core/info"
 	"gatesvr/etc"
 	"gatesvr/log"
 	"gatesvr/utils/eventbus"
@@ -144,9 +143,9 @@ func (c *Container) doSaveProcessID() {
 	}
 }
 
-// 打印框架信息
-func (c *Container) doPrintFrameworkInfo() {
-	info.PrintFrameworkInfo()
-
-	info.PrintGlobalInfo()
-}
+//// 打印框架信息
+//func (c *Container) doPrintFrameworkInfo() {
+//	info.PrintFrameworkInfo()
+//
+//	info.PrintGlobalInfo()
+//}

@@ -29,7 +29,6 @@ type serverConn struct {
 	done              chan struct{}  // 写入完成信号
 	close             chan struct{}  // 关闭信号
 	lastHeartbeatTime int64          // 上次心跳时间
-	//pendingMessages   []pendingMsg   // 未发送的消息队列
 }
 
 var _ network.Conn = &serverConn{}
@@ -392,7 +391,7 @@ func (c *serverConn) write() {
 			}
 			//time.Sleep(200 * time.Millisecond)
 			if _, err := conn.Write(r.msg); err != nil {
-				log.Debugf("发送失败的消息: %v", r.msg)
+				//log.Debugf("发送失败的消息: %v", r.msg)
 				log.Errorf("write data message error: %v", err)
 			}
 			//log.Debugf("conn.Write发送消息: %v", r.msg)

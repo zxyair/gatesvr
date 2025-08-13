@@ -26,4 +26,6 @@ COPY --from=builder /app/lobbysvr .
 # 复制配置文件（如果需要）
 COPY --from=builder /app/functiontest/send-and-receive-message-compress-encrypto/nodestart/ .
 
-CMD ["./lobbysvr"]
+CMD ["sleep", "infinity"]
+#CMD ["./lobbysvr"]
+#CMD ["/bin/sh"]

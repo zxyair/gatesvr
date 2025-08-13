@@ -211,9 +211,9 @@ func (l *GateLinker) Stat(ctx context.Context, kind session.Kind) (int64, error)
 			if err != nil {
 				return err
 			}
-
 			n, err := client.Stat(ctx, kind)
 			if err != nil {
+				log.Debugf("获取在线用户失败: %v", err)
 				return err
 			}
 

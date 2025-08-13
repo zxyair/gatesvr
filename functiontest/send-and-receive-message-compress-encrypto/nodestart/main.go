@@ -9,6 +9,7 @@ import (
 	"gatesvr/functiontest/send-and-receive-message-compress-encrypto/route"
 	"gatesvr/locate/redis"
 	"gatesvr/registry/etcd"
+	"time"
 )
 
 // 路由号
@@ -27,9 +28,7 @@ func main() {
 	//	rsa.WithEncryptorPublicKey(publicKey),
 	//	rsa.WithEncryptorPrivateKey(privateKey))
 	// 创建用户定位器
-	locator := redis.NewLocator(
-		redis.WithPassword("123456"),
-	)
+	locator := redis.NewLocator()
 	// 创建服务发现
 	registry := etcd.NewRegistry()
 	// 创建节点组件
@@ -53,7 +52,11 @@ func initApp(proxy *node.Proxy) {
 	proxy.Router().AddRouteHandler(route.Greet, false, logics.GreetHandler)
 	proxy.Router().AddRouteHandler(route.AuthritionCheck, false, logics.AuthritionCheckHandler)
 	proxy.Router().AddRouteHandler(route.ForwardMessage, false, logics.ForwardMessage)
+	proxy.Router().AddRouteHandler(route.PressureTest, false, logics.PressureTestHandler)
 	//proxy.Router().AddRouteHandler(checkConn, false, logics.CheckConnection)
-	go helper.HandleConsoleInput(proxy)
+	go func() {
+		time.Sleep(1 * time.Second)
+		helper.HandleConsoleInput(proxy)
+	}()
 
 }

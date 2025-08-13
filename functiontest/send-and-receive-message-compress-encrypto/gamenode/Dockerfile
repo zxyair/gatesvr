@@ -27,4 +27,6 @@ COPY --from=builder /app/gamesvr .
 COPY --from=builder /app/functiontest/send-and-receive-message-compress-encrypto/gamenode/ .
 
 
-CMD ["./gamesvr"]
+#CMD ["./gamesvr"]
+#CMD ["/bin/sh"]
+CMD ["sleep", "infinity"]

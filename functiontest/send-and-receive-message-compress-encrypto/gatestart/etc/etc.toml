@@ -26,11 +26,10 @@ shutdownMaxWaitTime = "60s"
     # 用户名
     username = ""
     # 密码
-    password = "123456"
+    password = "Zxy140522@"
     # 最大重试次数
     maxRetries = 3
-    # key前缀
-    prefix = "due"
+
 
 [registry.etcd]
     # 客户端连接地址，默认为["127.0.0.1:2379"]
@@ -63,13 +62,13 @@ shutdownMaxWaitTime = "60s"
     # 路由字节数，默认为2字节
     routeBytes = 2
     # 序列号字节数，默认为2字节
-    seqBytes = 2
+    seqBytes = 4
     # 消息字节数，默认为5000字节
     bufferBytes = 100000
 
 [log]
     # 日志输出文件
-    file = "./log/due.log"
+    file = "./log/gate.log"
     # 日志输出级别，可选：debug | info | warn | error | fatal | panic
     level = "debug"
     # 日志输出格式，可选：text | json

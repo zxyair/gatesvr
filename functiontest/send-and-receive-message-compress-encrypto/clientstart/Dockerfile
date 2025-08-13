@@ -27,4 +27,6 @@ COPY --from=builder /app/client .
 COPY --from=builder /app/functiontest/send-and-receive-message-compress-encrypto/clientstart/ .
 
 
-CMD ["./client"]
+#CMD ["./client"]
+CMD ["sleep", "infinity"]
+#CMD ["/bin/sh"]

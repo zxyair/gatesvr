@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gatesvr/cluster/node"
 	"gatesvr/functiontest/send-and-receive-message-compress-encrypto/nodestart/logics"
+	"gatesvr/log"
 	"os"
 	"strings"
 )
@@ -33,32 +34,44 @@ func HandleConsoleInput(proxy *node.Proxy) {
 				}
 				logics.Push(proxy, parts[1], parts[2])
 			}
-		case "bindNode":
-			{
-				if len(parts) < 2 {
-					fmt.Println("请输入待绑定用户id，例如: bindNode 1")
-					continue
-				}
-				logics.BindNode(proxy, parts[1])
-			}
-		case "NodeContinuePush":
-			{
-				if len(parts) < 3 {
-					fmt.Println("请输入推送内容，例如: push 123 请准备")
-					continue
-				}
-				logics.NodeContinuePush(proxy, parts[1], parts[2])
-			}
-		case "IsOnline":
+		//case "NodeContinuePush":
+		//	{
+		//		if len(parts) < 3 {
+		//			fmt.Println("请输入推送内容，例如: push 123 请准备")
+		//			continue
+		//		}
+		//		logics.NodeContinuePush(proxy, parts[1], parts[2])
+		//	}
+		case "isOnline":
 			{
 				if len(parts) < 2 {
 					fmt.Println("请输入待查询用户id，例如: isOnline 1")
 					continue
 				}
-				logics.IsOnline(proxy, parts[1])
+				online, err := logics.IsOnline(proxy, parts[1])
+				if err != nil {
+					log.Debugf("uid %d Not Online Or Not Exist", parts[1])
+					return
+				}
+				if online {
+					fmt.Println("用户在线")
+				} else {
+					fmt.Println("用户离线")
+				}
+
+			}
+		case "onlineUserCount":
+			{
+				count, err := logics.OnlineUserCount(proxy)
+				if err != nil {
+					log.Debugf("get online user count failed, err:%v", err)
+					return
+				} else {
+					log.Debugf("在线用户数:%d", count)
+				}
 			}
 		//	这两个关闭必须展示，有设计点的呢
-		case "ForceClose":
+		case "forceClose":
 			{
 				if len(parts) < 2 {
 					fmt.Println("请输入待关闭用户id，例如: ForceClose 1")
@@ -66,7 +79,7 @@ func HandleConsoleInput(proxy *node.Proxy) {
 				}
 				logics.ForceClose(proxy, parts[1])
 			}
-		case "GracefulClose":
+		case "gracefulClose":
 			{
 				if len(parts) < 2 {
 					fmt.Println("请输入待关闭用户id，例如: GracefulClose 1")
@@ -76,6 +89,10 @@ func HandleConsoleInput(proxy *node.Proxy) {
 			}
 		case "exit":
 			return
+		case "help":
+			{
+				printhelper()
+			}
 		default:
 			fmt.Println("无效命令，请重新输入")
 		}
@@ -83,7 +100,18 @@ func HandleConsoleInput(proxy *node.Proxy) {
 }
 
 func printhelper() {
-	fmt.Println("欢迎使用客户端功能测试工具——首次运行请先执行 dial 命令连接网关服务器, 之后输入auth <uid> 进行鉴权")
-	fmt.Println("请输入命令，例如: dial")
-	fmt.Println("功能测试命令列表:")
+	fmt.Println("==================================================")
+	fmt.Println("欢迎使用节点控制台测试工具")
+	fmt.Println("请输入命令，例如: push 123 请准备")
+	fmt.Println("==================================================")
+	fmt.Println("\n[功能命令列表]")
+	fmt.Println("  broadcast <seq> <message>: 广播消息（例如: broadcast 865 活动开始）")
+	fmt.Println("  push <uid> <message>: 推送消息给指定用户（例如: push 123 请准备）")
+	fmt.Println("  isOnline <uid>: 查询用户是否在线（例如: isOnline 1）")
+	fmt.Println("  onlineUserCount: 查询当前在线用户数")
+	fmt.Println("  forceClose <uid>: 强制关闭指定用户连接（例如: forceClose 1）")
+	fmt.Println("  gracefulClose <uid>: 优雅关闭指定用户连接（例如: gracefulClose 1）")
+	fmt.Println("  help: 显示帮助信息")
+	fmt.Println("  exit: 退出程序")
+	fmt.Println("==================================================")
 }

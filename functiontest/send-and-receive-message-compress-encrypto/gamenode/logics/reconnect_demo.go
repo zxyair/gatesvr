@@ -57,16 +57,3 @@ func ReconnectDemo(proxy *node.Proxy, uid string, message string) {
 		}
 	}
 }
-func IsOnline(proxy *node.Proxy, uid string) (bool, error) {
-	uidInt64, _ := strconv.ParseInt(uid, 10, 64)
-	gateID, err := proxy.LocateGate(context.Background(), uidInt64)
-	onlineFlag, err := proxy.IsOnline(context.Background(), &cluster.IsOnlineArgs{
-		GID:    gateID,
-		Kind:   2,
-		Target: uidInt64,
-	})
-	if err != nil {
-		return false, err
-	}
-	return onlineFlag, nil
-}

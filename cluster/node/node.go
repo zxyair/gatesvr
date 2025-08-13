@@ -450,21 +450,7 @@ func (n *Node) printInfo() {
 	infos = append(infos, fmt.Sprintf("Name: %s", n.Name()))
 	infos = append(infos, fmt.Sprintf("Link: %s", n.linker.ExposeAddr()))
 	infos = append(infos, fmt.Sprintf("Codec: %s", n.opts.codec.Name()))
-	infos = append(infos, fmt.Sprintf("Locator: %s", n.opts.locator.Name()))
 	infos = append(infos, fmt.Sprintf("Registry: %s", n.opts.registry.Name()))
-
-	if n.opts.encryptor != nil {
-		infos = append(infos, fmt.Sprintf("Encryptor: %s", n.opts.encryptor.Name()))
-	} else {
-		infos = append(infos, "Encryptor: -")
-	}
-
-	if n.opts.transporter != nil {
-		infos = append(infos, fmt.Sprintf("Transporter: %s", n.opts.transporter.Name()))
-	} else {
-		infos = append(infos, "Transporter: -")
-	}
-
 	info.PrintBoxInfo("Node", infos...)
 }
 
@@ -478,4 +464,22 @@ func (n *Node) addWait() {
 	if n.getState() != cluster.Shut {
 		n.wg.Add(1)
 	}
+}
+func (n *Node) getId() string {
+	return n.opts.id
+}
+
+// 获取Link
+func (n *Node) Link() string {
+	return n.linker.ExposeAddr()
+}
+
+// 获取codec
+func (n *Node) Codec() string {
+	return n.opts.codec.Name()
+}
+
+// 获取Registry
+func (n *Node) Registry() string {
+	return n.opts.registry.Name()
 }

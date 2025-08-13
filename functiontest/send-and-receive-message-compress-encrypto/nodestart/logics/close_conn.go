@@ -26,6 +26,8 @@ func ForceClose(proxy *node.Proxy, uid string) {
 	if err != nil {
 		log.Errorf("push failed: %v", err)
 		return
+	} else {
+		log.Debugf("client:%d连接已关闭", uidInt64)
 	}
 
 }
@@ -47,6 +49,8 @@ func GracefulClose(proxy *node.Proxy, uid string) {
 	if err != nil {
 		log.Errorf("push failed: %v", err)
 		return
+	} else {
+		log.Debugf("client:%d连接已关闭", uidInt64)
 	}
 
 }
